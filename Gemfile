@@ -45,6 +45,7 @@ end
 
 group :test do
   gem "selenium-webdriver"
+  gem "capybara-playwright-driver"  # Playwright driver for Capybara
 end
 
 gem "reactionview", "~> 0.1.2"
