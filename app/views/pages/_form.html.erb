@@ -1,0 +1,7 @@
+<div data-controller="ai-modal" data-ai-modal-page-id-value="<%= page.id %>">
+  <%= sectionable_edit_form(page, id: "sectionable-editor", data: { controller: "assistant house-md-caption markdown-upload" }) do |form| %>
+    <%= form.markdown_area :body, toolbar: "house_toolbar", required: true, autofocus: true, class: "page__editor" %>
+  <% end %>
+
+  <%= render "shared/ai_modal" %>
+</div>

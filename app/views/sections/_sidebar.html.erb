@@ -1,0 +1,25 @@
+<menu class="sidebar__content toc flex flex-column">
+  <header>
+    <h1 class="txt-large--responsive margin-none">
+      <%= report.title %>
+    </h1>
+  </header>
+
+  <% report.sections.active.with_sectionables.positioned.each do |section| %>
+    <li class="flex min-width <%= "section--section" if section.section? -%>">
+      <% if section.report.editable? %>
+        <%= link_to edit_sectionable_path(section), class: "toc__title hide_from_reading_mode min-width", data: { turbo_frame: "_top" } do %>
+          <span class="overflow-ellipsis"><%= section.title %></span>
+        <% end %>
+
+        <%= link_to sectionable_slug_path(section), class: "toc__title hide_from_edit_mode min-width", data: { turbo_frame: "_top" } do %>
+          <span class="overflow-ellipsis"><%= section.title %></span>
+        <% end %>
+      <% else %>
+        <%= link_to sectionable_slug_path(section), class: "toc__title min-width", data: { turbo_frame: "_top" } do %>
+          <span class="overflow-ellipsis"><%= section.title %></span>
+        <% end %>
+      <% end %>
+    </li>
+  <% end %>
+</menu>

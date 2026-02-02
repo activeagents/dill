@@ -1,0 +1,42 @@
+{
+  "name": "Dill",
+  "icons": [
+    {
+      "src": "/app-icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/app-icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "/app-icon.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "scope": "/",
+  "description": "Dill is a technology diligence platform for composing comprehensive reports from referenced source materials.",
+  "categories": ["business", "productivity", "finance"],
+  "shortcuts": [
+    {
+      "name": "Create a new report",
+      "description": "Open Dill and start a diligence report",
+      "url": "/reports/new",
+      "icons": [{ "src": "<%= image_url("add.svg") %>", "sizes": "any" }]
+    },
+    {
+      "name": "Open reports",
+      "description": "Open Dill and see all your reports",
+      "url": "/reports",
+      "icons": [{ "src": "<%= image_url("books.svg") %>", "sizes": "any" }]
+    }
+  ],
+  "theme_color": "#ffffff",
+  "background_color": "#ffffff"
+}

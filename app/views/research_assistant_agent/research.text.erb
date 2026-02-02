@@ -1,0 +1,53 @@
+Please research the following topic and provide a comprehensive summary with sources.
+
+## Research Topic
+<%= @topic %>
+
+<% if @context.present? %>
+## Additional Context
+<%= @context %>
+<% end %>
+
+<% if @full_content.present? %>
+## Current Document (for reference)
+<%= @full_content.truncate(2000) %>
+<% end %>
+
+## Instructions
+
+Use your browser tools to research this topic. Here's a recommended workflow:
+
+**Option 1: Direct URL search (most reliable)**
+1. navigate(url: "https://duckduckgo.com/?q=<%= ERB::Util.url_encode(@topic) %>") - Go directly to search results
+2. extract_links() - Get the search result URLs
+3. navigate(url: "...") - Visit promising results
+4. extract_main_content() - Read the page content
+5. Repeat steps 3-4 for multiple sources
+
+**Option 2: If direct search doesn't work, go to authoritative sites directly**
+- For Ruby gems: navigate to "https://rubygems.org/gems/GEM_NAME" or "https://github.com/OWNER/REPO"
+- For general topics: navigate to "https://en.wikipedia.org/wiki/TOPIC"
+- For documentation: navigate to official docs sites
+
+**Tips:**
+- Always cite your sources with URLs
+- Prioritize official documentation, GitHub repos, and authoritative sources
+- Extract specific quotes and data when available
+
+## Required Output Format
+
+### Summary
+A clear, comprehensive summary of the key information found (2-4 paragraphs).
+
+### Key Facts
+- Bullet points of the most important facts, statistics, and findings
+- Include specific details where available
+
+### Sources
+List all sources with their URLs:
+1. [Source Title](URL) - Brief description of what this source contributes
+
+### Suggested Text
+If applicable, provide 1-2 paragraphs of well-written text the author could incorporate into their writing, with inline citations.
+
+Begin your research now.

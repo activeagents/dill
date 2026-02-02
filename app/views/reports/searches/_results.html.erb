@@ -1,0 +1,13 @@
+<%= turbo_frame_tag :search do %>
+  <%= render "reports/searches/form", report: report %>
+
+  <div class="search__results flex flex-column margin-block-start">
+    <% if @sections.any? %>
+      <% @sections.each do |section| %>
+        <%= render "reports/searches/result", section: section %>
+      <% end %>
+    <% else %>
+      <p class="search__no_matches txt-align-center">No matches.</p>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,6 @@
+<%= link_to edit_sectionable_path(section, search: params[:search]), class: "search__result hide_from_reading_mode txt-ink", data: { turbo_frame: "_top" } do %>
+  <strong><%= section.title_match.html_safe %>:</strong> <%= section.content_match.html_safe %>
+<% end %>
+<%= link_to sectionable_slug_path(section, search: params[:search]), class: "search__result hide_from_edit_mode txt-ink", data: { turbo_frame: "_top" } do %>
+  <strong><%= section.title_match.html_safe %>:</strong> <%= section.content_match.html_safe %>
+<% end %>
