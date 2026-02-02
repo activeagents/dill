@@ -36,3 +36,8 @@
 
 # Ignore Playwright MCP files
 .playwright-mcp/*
+
+# Ignore Playwright test artifacts
+playwright-report/
+playwright/.auth/
+test-results/

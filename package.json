@@ -1,0 +1,39 @@
+{
+  "name": "dill",
+  "version": "1.0.0",
+  "description": "A fork of Writebook with integrated AI writing assistance powered by ActiveAgent and SolidAgent.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:auth": "npx playwright test authentication.spec.ts",
+    "test:reports": "npx playwright test reports.spec.ts",
+    "test:sections": "npx playwright test sections.spec.ts",
+    "test:pages": "npx playwright test pages.spec.ts",
+    "test:ai": "npx playwright test ai-assistant.spec.ts",
+    "test:publishing": "npx playwright test publishing.spec.ts",
+    "test:users": "npx playwright test users.spec.ts",
+    "test:findings": "npx playwright test findings.spec.ts",
+    "test:sources": "npx playwright test sources.spec.ts",
+    "test:unauth": "npx playwright test --project=unauthenticated",
+    "test:report": "npx playwright show-report"
+  },
+  "keywords": [
+    "rails",
+    "playwright",
+    "e2e",
+    "testing"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.1"
+  }
+}
