@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dill - Branding Preview</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#22c55e">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --color-green: #22c55e;
+      --color-green-dark: #15803d;
+      --color-green-light: #dcfce7;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--color-green), var(--color-green-dark));
+      color: white;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .logo-icon {
+      width: 48px;
+      height: 48px;
+      background: white;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .logo-text {
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    nav {
+      margin-left: auto;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      opacity: 0.9;
+      transition: opacity 0.2s;
+    }
+
+    nav a:hover {
+      opacity: 1;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #111827;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #6b7280;
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .card h2 {
+      color: #111827;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+    }
+
+    .btn-primary {
+      background: var(--color-green);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--color-green-dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--color-green);
+      border: 2px solid var(--color-green);
+    }
+
+    .btn-outline:hover {
+      background: var(--color-green-light);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    a {
+      color: var(--color-green);
+    }
+
+    a:hover {
+      color: var(--color-green-dark);
+    }
+
+    .color-swatches {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .swatch {
+      width: 80px;
+      height: 80px;
+      border-radius: 12px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+
+    .icons-row {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-top: 1rem;
+    }
+
+    .icon-preview {
+      text-align: center;
+    }
+
+    .icon-preview img {
+      border-radius: 22%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .icon-preview p {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .emoji-large {
+      font-size: 64px;
+      line-height: 1;
+    }
+
+    .branding-hero {
+      text-align: center;
+      padding: 3rem;
+      background: linear-gradient(135deg, var(--color-green-light), white);
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+
+    .branding-hero .emoji-large {
+      font-size: 96px;
+      margin-bottom: 1rem;
+    }
+
+    .branding-hero h2 {
+      font-size: 2rem;
+      color: var(--color-green-dark);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="logo-icon">🥒</div>
+      <span class="logo-text">Dill</span>
+    </div>
+    <nav>
+      <a href="#">Reports</a>
+      <a href="#">Sources</a>
+      <a href="#">Settings</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="branding-hero">
+      <div class="emoji-large">🥒</div>
+      <h2>dill.vc</h2>
+      <p class="subtitle">Technology diligence platform</p>
+    </div>
+
+    <h1>Branding Preview</h1>
+    <p class="subtitle">Updated green theme with cucumber emoji logo</p>
+
+    <div class="card">
+      <h2>App Icons</h2>
+      <div class="icons-row">
+        <div class="icon-preview">
+          <img src="/app-icon.png" width="128" height="128" alt="App Icon 512x512">
+          <p>512x512</p>
+        </div>
+        <div class="icon-preview">
+          <img src="/app-icon-192.png" width="96" height="96" alt="App Icon 192x192">
+          <p>192x192</p>
+        </div>
+        <div class="icon-preview">
+          <img src="/favicon.png" width="32" height="32" alt="Favicon">
+          <p>Favicon 32x32</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Buttons</h2>
+      <div class="buttons">
+        <button class="btn btn-primary">Primary Action</button>
+        <button class="btn btn-outline">Secondary Action</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Links</h2>
+      <p>This is an example of <a href="#">a green link</a> in the new branding.</p>
+    </div>
+
+    <div class="card">
+      <h2>Brand Colors</h2>
+      <div class="color-swatches">
+        <div class="swatch" style="background: #22c55e;">#22c55e</div>
+        <div class="swatch" style="background: #15803d;">#15803d</div>
+        <div class="swatch" style="background: #16a34a;">#16a34a</div>
+        <div class="swatch" style="background: #dcfce7; color: #15803d;">#dcfce7</div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>
