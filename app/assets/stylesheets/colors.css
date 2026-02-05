@@ -12,6 +12,7 @@
   --lch-red: 51% 0.2 31;
   --lch-green: 65.59% 0.234 142.49;
   --lch-green-light: 95% 0.03 142.49;
+  --lch-green-dark: 80% 0.08 142.49;
   --lch-always-black: 0% 0 0;
   --lch-always-white: 100% 0 0;
   --lch-yellow: 92.62% 0.1 91.5;
@@ -23,16 +24,18 @@
   --color-bg: oklch(var(--lch-white));
   --color-ink: oklch(var(--lch-black));
   --color-ink-reversed: oklch(var(--lch-white));
-  --color-link: oklch(var(--lch-blue));
+  --color-link: oklch(var(--lch-green));
   --color-subtle-light: oklch(var(--lch-gray-light));
   --color-subtle: oklch(var(--lch-gray));
   --color-subtle-dark: oklch(var(--lch-gray-dark));
-  --color-selected: oklch(var(--lch-blue-light));
-  --color-selected-dark: oklch(var(--lch-blue-dark));
+  --color-selected: oklch(var(--lch-green-light));
+  --color-selected-dark: oklch(var(--lch-green-dark));
   --color-marker: oklch(var(--lch-orange));
   --color-always-black: oklch(var(--lch-always-black));
   --color-always-white: oklch(var(--lch-always-white));
   --color-highlight: oklch(var(--lch-yellow));
+  --color-primary: oklch(var(--lch-green));
+  --color-primary-light: oklch(var(--lch-green-light));
 
   /* Redefine named color values for dark mode */
   @media (prefers-color-scheme: dark) {
@@ -47,6 +50,7 @@
     --lch-red: 73.8% 0.184 29.18;
     --lch-green: 75% 0.21 141.89;
     --lch-green-light: 28.11% 0.02 142.49;
+    --lch-green-dark: 42.25% 0.07 142.49;
     --lch-yellow: 40.9% 0.06 88.9;
   }
 }

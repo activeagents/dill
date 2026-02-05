@@ -148,7 +148,7 @@
 
 .reference-card__excerpt summary {
   cursor: pointer;
-  color: var(--color-link, #0066cc);
+  color: var(--color-link, #22c55e);
 }
 
 .reference-card__excerpt summary:hover {
@@ -259,7 +259,7 @@
   font-weight: 600;
   line-height: 16px;
   text-align: center;
-  background: var(--color-primary, #0066cc);
+  background: var(--color-primary, #22c55e);
   color: white;
   border-radius: 8px;
 }
