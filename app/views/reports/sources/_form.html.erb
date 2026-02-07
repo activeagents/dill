@@ -24,6 +24,8 @@
               <%= image_tag "write.svg", size: 24 %> Text
             <% when "url" %>
               <%= image_tag "link.svg", size: 24 %> URL
+            <% when "outline" %>
+              <%= image_tag "write.svg", size: 24 %> Outline
             <% end %>
           </span>
         </label>
@@ -47,9 +49,12 @@
     <%= form.url_field :url, class: "input input--full-width", placeholder: "https://example.com/article" %>
   </div>
 
-  <div class="form-group margin-block-end" data-source-form-target="textField" data-show-for="text" style="display: none;">
+  <div class="form-group margin-block-end" data-source-form-target="textField" data-show-for="text outline" style="display: none;">
     <%= form.label :raw_content, "Content", class: "txt-medium" %>
     <%= form.text_area :raw_content, class: "input input--full-width", rows: 10, placeholder: "Paste or type your text content here..." %>
+    <p class="txt-small txt-faint margin-block-start-half outline-hint" style="display: none;" data-source-form-target="outlineHint">
+      Use markdown headings (## Section Name) and bullet points (- key point) to structure your outline. This will be used as the source-of-truth for AI content generation.
+    </p>
   </div>
 
   <div class="form-actions flex justify-end gap margin-block-start-double">

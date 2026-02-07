@@ -13,8 +13,13 @@
     <h1><%= highlight_searched_content @section, simple_format(@section.section.body), params[:search] %></h1>
   </div>
 <% elsif @section.page? %>
-  <div class="page--page" data-controller="scroll-to-highlight">
-    <%= highlight_searched_content @section, sanitize_content(@section.page.body.to_html), params[:search] %>
+  <%= render "shared/content_legend", report: @report, section: @section %>
+  <div class="page--page" data-controller="scroll-to-highlight content-annotations">
+    <% if @report.sources.outlines.processed.any? || (@section.page.respond_to?(:has_pending_suggestions?) && @section.page.has_pending_suggestions?) %>
+      <%= highlight_searched_content @section, annotate_page_content(@section.page, @report), params[:search] %>
+    <% else %>
+      <%= highlight_searched_content @section, sanitize_content(@section.page.body.to_html), params[:search] %>
+    <% end %>
   </div>
 <% elsif @section.picture? %>
   <figure class="page--picture flex flex-column align-center gap margin-none">

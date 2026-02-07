@@ -101,4 +101,13 @@
     </svg>
     <span class="for-screen-reader">AI: Research topic</span>
   </button>
+
+  <button type="button" class="house-toolbar__button" onclick="document.dispatchEvent(new CustomEvent('ai-modal:perform', { detail: { actionType: 'compare_to_outline' } }))" title="AI: Compare to Outline">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" class="colorize--black">
+      <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <rect x="9" y="3" width="6" height="4" rx="1" stroke-width="2"/>
+      <path d="M9 12l2 2 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="for-screen-reader">AI: Compare to outline</span>
+  </button>
 <% end %>

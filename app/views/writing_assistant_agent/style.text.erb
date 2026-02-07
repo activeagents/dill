@@ -1,5 +1,10 @@
 Please adjust the style of the following<%= @has_selection ? " selected" : "" %> text:
 
+<% if @outline_context.present? %>
+## Source-of-Truth Outline (for reference - maintain alignment):
+<%= @outline_context %>
+
+<% end %>
 <% if @has_selection %>
 ## Selected text to restyle:
 <%= @selection %>

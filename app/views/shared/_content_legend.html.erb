@@ -1,0 +1,24 @@
+<% if report.sources.outlines.processed.any? || (defined?(section) && section&.page? && section.page.respond_to?(:suggestions) && section.page.suggestions.pending.ai_generated.any?) %>
+  <div class="content-legend flex gap align-center">
+    <% if report.sources.outlines.processed.any? %>
+      <span class="content-legend__item">
+        <span class="content-legend__swatch content-legend__swatch--outline"></span>
+        Outline-referenced
+      </span>
+      <span class="content-legend__item">
+        <span class="content-legend__swatch content-legend__swatch--ai"></span>
+        AI-generated
+      </span>
+    <% end %>
+    <% if defined?(section) && section&.page? && section.page.respond_to?(:suggestions) && section.page.suggestions.pending.ai_generated.any? %>
+      <span class="content-legend__item">
+        <span class="content-legend__swatch content-legend__swatch--remove"></span>
+        Suggested removal
+      </span>
+      <span class="content-legend__item">
+        <span class="content-legend__swatch content-legend__swatch--add"></span>
+        Suggested addition
+      </span>
+    <% end %>
+  </div>
+<% end %>

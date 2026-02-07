@@ -260,6 +260,8 @@ class AssistantsController < ApplicationController
       agent.expand.generate_later
     when 'brainstorm'
       agent.brainstorm.generate_later
+    when 'compare_to_outline'
+      agent.compare_to_outline.generate_later
     when 'research'
       # Research uses a different agent with browser tools
       # Look up the page to associate context with for references

@@ -50,6 +50,13 @@ class WritingAssistantAgent < ApplicationAgent
     @full_content = params[:full_content]
     @number_of_ideas = params[:number_of_ideas]
     @task = "generate creative ideas and suggestions"
+    @outline_context = fetch_outline_context
+    setup_context_and_prompt
+  end
+
+  def compare_to_outline
+    setup_content_params
+    @task = "compare this content against the source-of-truth outline and identify discrepancies, missing coverage, and recommended changes"
     setup_context_and_prompt
   end
 
@@ -71,6 +78,9 @@ class WritingAssistantAgent < ApplicationAgent
 
     # Build reference context from detected markdown links
     @reference_context = build_reference_context
+
+    # Fetch outline context from source-of-truth outlines
+    @outline_context = fetch_outline_context
   end
 
   def fetch_related_content
@@ -86,6 +96,58 @@ class WritingAssistantAgent < ApplicationAgent
   rescue => e
     Rails.logger.warn "[WritingAssistantAgent] Failed to fetch related content: #{e.message}"
     nil
+  end
+
+  # Fetch outline sources for the report and any section-specific outline tags
+  def fetch_outline_context
+    contextable = params[:contextable]
+    return nil unless contextable
+
+    report = if contextable.respond_to?(:report)
+      contextable.report
+    elsif contextable.respond_to?(:section) && contextable.section&.report
+      contextable.section.report
+    end
+    return nil unless report
+
+    # Get all outline sources for this report
+    outlines = report.sources.outlines.processed
+    return nil if outlines.empty?
+
+    # Also check for section-specific outline tags
+    section_outlines = if contextable.respond_to?(:source_tags)
+      contextable.source_tags
+        .includes(:source)
+        .where(sources: { source_type: "outline" })
+        .map { |tag| { source: tag.source, excerpt: tag.excerpt, context: tag.context } }
+    end
+
+    build_outline_prompt_context(outlines, section_outlines)
+  rescue => e
+    Rails.logger.warn "[WritingAssistantAgent] Failed to fetch outline context: #{e.message}"
+    nil
+  end
+
+  def build_outline_prompt_context(report_outlines, section_outlines)
+    parts = []
+
+    report_outlines.each do |outline|
+      context = outline.outline_context_for_ai || outline.context_for_ai
+      parts << "## Report Outline: #{outline.display_name}\n#{context}" if context.present?
+    end
+
+    if section_outlines.present?
+      section_outlines.each do |tag_data|
+        excerpt = tag_data[:excerpt]
+        ctx = tag_data[:context]
+        source_name = tag_data[:source]&.display_name
+        if excerpt.present?
+          parts << "## Section-Specific Outline (#{source_name}):\n#{ctx}\n#{excerpt}"
+        end
+      end
+    end
+
+    parts.any? ? parts.join("\n\n===\n\n") : nil
   end
 
   # Build context from references detected in the selection
@@ -152,6 +214,13 @@ class WritingAssistantAgent < ApplicationAgent
   def create_fragment_if_applicable
     return unless @fragment_data.present? && context.present?
 
+    # Track which outline source was used for this generation
+    outline_source = if @outline_context.present?
+      contextable = params[:contextable]
+      report = contextable.respond_to?(:report) ? contextable.report : contextable.section&.report
+      report&.sources&.outlines&.processed&.first
+    end
+
     @fragment = context.fragments.create!(
       contextable: params[:contextable],
       fragment_type: @fragment_data[:fragment_type] || "selection",
@@ -160,6 +229,7 @@ class WritingAssistantAgent < ApplicationAgent
       end_offset: @fragment_data[:end_offset],
       action_type: @fragment_data[:action_type],
       detected_references: @fragment_data[:detected_references],
+      outline_source_id: outline_source&.id,
       status: "generating"
     )
 
@@ -187,6 +257,7 @@ class WritingAssistantAgent < ApplicationAgent
       number_of_ideas: @number_of_ideas,
       related_content: @related_content,
       reference_context: @reference_context,
+      outline_context: @outline_context,
       fragment_id: @fragment&.id
     }.compact
   end
@@ -209,6 +280,9 @@ class WritingAssistantAgent < ApplicationAgent
     # Mark the fragment as generated with the accumulated content
     mark_fragment_generated
 
+    # Parse outline comparison suggestions if applicable
+    parse_outline_comparison_suggestions
+
     Rails.logger.info "[Agent] Broadcasting completion to stream_id: #{params[:stream_id]}"
     ActionCable.server.broadcast(params[:stream_id], { done: true })
   end
@@ -225,5 +299,33 @@ class WritingAssistantAgent < ApplicationAgent
     Rails.logger.info "[WritingAssistantAgent] Fragment #{@fragment.id} marked as generated with #{generated_content.length} chars"
   rescue => e
     Rails.logger.warn "[WritingAssistantAgent] Failed to mark fragment as generated: #{e.message}"
+  end
+
+  # Parse structured suggestions from compare_to_outline responses
+  def parse_outline_comparison_suggestions
+    return unless @task&.include?("compare") && @accumulated_content.present?
+
+    suggestable = params[:contextable]
+    return unless suggestable.respond_to?(:create_suggestion)
+
+    @accumulated_content.scan(
+      /\*\*Suggestion\*\*:\s*(.+?)\n\*\*Original\*\*:\s*(.+?)\n\*\*Suggested\*\*:\s*(.+?)\n\*\*Reasoning\*\*:\s*(.+?)(?=\n\n\*\*Suggestion\*\*|\z)/m
+    ).each do |match|
+      comment, original, suggested, reasoning = match.map(&:strip)
+
+      suggestable.create_suggestion(
+        type: original == "MISSING" ? "add" : "edit",
+        original_text: original == "MISSING" ? nil : original,
+        suggested_text: suggested,
+        comment: comment,
+        ai_generated: true
+      )
+
+      # Update reasoning via direct update since create_suggestion doesn't accept it
+      suggestion = suggestable.suggestions.order(created_at: :desc).first
+      suggestion&.update_columns(reasoning: reasoning, source_category: "outline_comparison")
+    end
+  rescue => e
+    Rails.logger.warn "[WritingAssistantAgent] Failed to parse outline comparison suggestions: #{e.message}"
   end
 end

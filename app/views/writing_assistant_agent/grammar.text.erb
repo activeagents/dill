@@ -1,5 +1,10 @@
 Please check and correct the grammar in the following<%= @has_selection ? " selected" : "" %> text:
 
+<% if @outline_context.present? %>
+## Source-of-Truth Outline (for reference - ensure terminology matches):
+<%= @outline_context %>
+
+<% end %>
 <% if @has_selection %>
 ## Selected text to check:
 <%= @selection %>

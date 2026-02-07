@@ -435,7 +435,8 @@ export default class extends Controller {
       brainstorm: 'Brainstorming...',
       caption: 'Generating caption...',
       research: 'Researching topic...',
-      extract_image_text: 'Extracting text from image...'
+      extract_image_text: 'Extracting text from image...',
+      compare_to_outline: 'Comparing to outline...'
     }
     return labels[actionType] || 'Processing...'
   }
