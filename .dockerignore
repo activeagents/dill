@@ -1,0 +1,43 @@
+# Git
+.git
+.gitignore
+
+# CI/CD and infrastructure
+terraform/
+.github/
+
+# Development and test files
+node_modules/
+e2e/
+test/
+playwright-report/
+playwright/
+test-results/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs and temp
+log/*
+tmp/*
+
+# OS files
+.DS_Store
+
+# Documentation
+docs/
+*.md
+
+# Environment files
+.env
+.env.*
+
+# Storage (databases and uploads are created at runtime)
+storage/*
+
+# Playwright MCP
+.playwright-mcp/
