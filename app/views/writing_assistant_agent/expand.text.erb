@@ -8,6 +8,13 @@ Please expand the following<%= @has_selection ? " selected" : "" %> text with mo
 
 <% end %>
 <% end %>
+<% if @outline_context.present? %>
+## Source-of-Truth Outline (IMPORTANT - use as primary reference):
+The following outline defines the expected content and structure. Expand the content in alignment with this outline.
+
+<%= @outline_context %>
+
+<% end %>
 <% if @reference_context.present? %>
 ## Reference sources to incorporate:
 The following sources were found in the selected text. Use them to add accurate details and examples:

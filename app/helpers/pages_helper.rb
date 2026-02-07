@@ -11,4 +11,20 @@ module PagesHelper
   def sanitize_content(content)
     sanitize content, scrubber: HtmlScrubber.new
   end
+
+  def annotate_page_content(page, report)
+    html = sanitize_content(page.body.to_html)
+
+    # Apply outline-reference highlighting (blue/purple)
+    if report.sources.outlines.processed.any?
+      html = ContentAnnotationService.new(page, report: report).annotate(html)
+    end
+
+    # Apply diff recommendations (red/green)
+    if page.respond_to?(:has_pending_suggestions?) && page.has_pending_suggestions?
+      html = DiffAnnotationService.new(page).annotate(html)
+    end
+
+    html.html_safe
+  end
 end

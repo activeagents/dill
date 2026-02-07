@@ -34,6 +34,7 @@ class SourceTag < ApplicationRecord
     when "image" then "\u{1F5BC}" # framed picture
     when "text" then "\u{1F4DD}"  # memo
     when "url" then "\u{1F517}"   # link
+    when "outline" then "\u{1F4CB}" # clipboard
     end
   end
 end

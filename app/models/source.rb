@@ -1,5 +1,5 @@
 class Source < ApplicationRecord
-  SOURCE_TYPES = %w[pdf image text url].freeze
+  SOURCE_TYPES = %w[pdf image text url outline].freeze
   PROCESSING_STATUSES = %w[pending processing completed failed].freeze
 
   belongs_to :report
@@ -15,6 +15,8 @@ class Source < ApplicationRecord
 
   scope :ordered, -> { order(created_at: :desc) }
   scope :processed, -> { where(processing_status: :completed) }
+  scope :outlines, -> { where(source_type: "outline") }
+  scope :non_outlines, -> { where.not(source_type: "outline") }
 
   after_create_commit :process_source_async
 
@@ -34,6 +36,10 @@ class Source < ApplicationRecord
     source_type == "url"
   end
 
+  def outline?
+    source_type == "outline"
+  end
+
   def file_attached?
     file.attached?
   end
@@ -43,6 +49,25 @@ class Source < ApplicationRecord
     return raw_content if raw_content.present?
 
     nil
+  end
+
+  def outline_context_for_ai
+    return nil unless outline?
+
+    sections = structured_content&.dig("sections")
+    return extracted_content unless sections.present? && sections.any?
+
+    sections.map do |section|
+      heading = section["heading"]
+      content = section["content"]
+      key_points = section["key_points"]&.map { |p| "  - #{p}" }&.join("\n")
+
+      parts = []
+      parts << "### #{heading}" if heading.present?
+      parts << content if content.present?
+      parts << "Key Points:\n#{key_points}" if key_points.present?
+      parts.join("\n")
+    end.join("\n\n---\n\n")
   end
 
   def display_name

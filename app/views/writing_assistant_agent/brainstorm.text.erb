@@ -6,6 +6,11 @@ Topic: <%= @topic %>
 Context: <%= @context %>
 <% end %>
 
+<% if @outline_context.present? %>
+## Source-of-Truth Outline (generate ideas that align with this outline):
+<%= @outline_context %>
+
+<% end %>
 <% if @related_content.present? %>
 ## Related sections from this report (for inspiration and consistency):
 <% @related_content.each do |related| %>

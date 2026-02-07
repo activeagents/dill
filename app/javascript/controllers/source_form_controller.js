@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["fileField", "urlField", "textField", "typeOption"]
+  static targets = ["fileField", "urlField", "textField", "typeOption", "outlineHint"]
 
   connect() {
     this.updateFieldVisibility()
@@ -16,7 +16,22 @@ export default class extends Controller {
 
     this.toggleField(this.fileFieldTarget, ["pdf", "image"].includes(selectedType))
     this.toggleField(this.urlFieldTarget, selectedType === "url")
-    this.toggleField(this.textFieldTarget, selectedType === "text")
+    this.toggleField(this.textFieldTarget, ["text", "outline"].includes(selectedType))
+
+    // Show/hide outline hint
+    if (this.hasOutlineHintTarget) {
+      this.outlineHintTarget.style.display = selectedType === "outline" ? "block" : "none"
+    }
+
+    // Update placeholder text based on type
+    const textarea = this.textFieldTarget?.querySelector("textarea")
+    if (textarea) {
+      if (selectedType === "outline") {
+        textarea.placeholder = "## Section Heading\n\nDescribe the expected content for this section...\n\n- Key point 1\n- Key point 2\n\n## Another Section\n\nMore outline content..."
+      } else {
+        textarea.placeholder = "Paste or type your text content here..."
+      }
+    }
 
     // Update radio card styles
     this.typeOptionTargets.forEach(option => {

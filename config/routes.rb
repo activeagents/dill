@@ -31,7 +31,9 @@ Rails.application.routes.draw do
       end
 
       resource :search
-      resources :sources
+      resources :sources do
+        resources :taggings, controller: "reports/sources/taggings", only: [:create, :destroy]
+      end
     end
 
     resources :text_blocks
@@ -60,6 +62,13 @@ Rails.application.routes.draw do
   resources :pages, only: [] do
     scope module: "pages" do
       resources :edits, only: :show
+    end
+  end
+
+  resources :suggestions, only: [] do
+    member do
+      patch :accept
+      patch :reject
     end
   end
 

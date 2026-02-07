@@ -1,0 +1,31 @@
+Compare the following content against the source-of-truth outline. For each discrepancy, provide a structured suggestion.
+
+<% if @outline_context.present? %>
+## Source-of-Truth Outline:
+<%= @outline_context %>
+
+<% else %>
+NOTE: No outline was found for this report. Please provide general improvement suggestions instead.
+<% end %>
+
+## Current Content:
+<% if @has_selection %>
+<%= @selection %>
+<% else %>
+<%= @content %>
+<% end %>
+
+For each issue found, output in this EXACT format (each field on its own line):
+**Suggestion**: [Brief description of the issue]
+**Original**: [The exact text that should change, or "MISSING" if content needs to be added]
+**Suggested**: [The recommended replacement text or new text to add]
+**Reasoning**: [Why this change aligns better with the outline]
+
+Focus on:
+- Missing content that the outline specifies but is not present
+- Content that contradicts or diverges from the outline
+- Sections that could better reference or align with outline material
+- Structural alignment with the outlined organization
+- Terminology consistency with the outline
+
+If the content already aligns well with the outline, say so and provide only minor suggestions if any.

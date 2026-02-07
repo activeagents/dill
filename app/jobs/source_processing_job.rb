@@ -15,6 +15,8 @@ class SourceProcessingJob < ApplicationJob
       process_text(source)
     when "url"
       process_url(source)
+    when "outline"
+      process_outline(source)
     else
       raise "Unknown source type: #{source.source_type}"
     end
@@ -188,6 +190,66 @@ class SourceProcessingJob < ApplicationJob
     text = text.gsub(/&#39;/, "'")
     text = text.gsub(/\s+/, " ")
     text.strip.truncate(50_000) # Limit size
+  end
+
+  def process_outline(source)
+    return unless source.raw_content.present?
+
+    # Copy raw content to extracted content
+    extracted = source.raw_content
+
+    # Parse markdown structure into sections
+    structured = parse_outline_structure(extracted)
+
+    source.update!(
+      extracted_content: extracted,
+      structured_content: structured
+    )
+
+    Rails.logger.info "[SourceProcessingJob] Processed outline source #{source.id} with #{structured['sections']&.length || 0} sections"
+  end
+
+  def parse_outline_structure(text)
+    sections = []
+    current_section = nil
+
+    text.each_line do |line|
+      stripped = line.strip
+
+      # Detect markdown headings (# ## ### etc.)
+      if stripped.match?(/\A#{1,6}\s/)
+        # Save previous section
+        sections << finalize_section(current_section) if current_section
+
+        heading = stripped.sub(/\A#+\s*/, "")
+        current_section = { "heading" => heading, "content_lines" => [], "key_points" => [] }
+      elsif current_section
+        # Detect bullet points as key points
+        if stripped.match?(/\A[-*]\s/)
+          current_section["key_points"] << stripped.sub(/\A[-*]\s*/, "")
+        elsif stripped.present?
+          current_section["content_lines"] << stripped
+        end
+      else
+        # Content before any heading -- treat as an implicit section
+        if stripped.present?
+          current_section = { "heading" => nil, "content_lines" => [ stripped ], "key_points" => [] }
+        end
+      end
+    end
+
+    # Save the last section
+    sections << finalize_section(current_section) if current_section
+
+    { "sections" => sections }
+  end
+
+  def finalize_section(section)
+    {
+      "heading" => section["heading"],
+      "content" => section["content_lines"].join("\n"),
+      "key_points" => section["key_points"]
+    }
   end
 
   def handle_error(source, error)

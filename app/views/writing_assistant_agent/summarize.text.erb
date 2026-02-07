@@ -1,5 +1,10 @@
 Please provide a concise summary of the following<%= @has_selection ? " selected" : "" %> text:
 
+<% if @outline_context.present? %>
+## Source-of-Truth Outline (for reference - ensure summary aligns with outlined priorities):
+<%= @outline_context %>
+
+<% end %>
 <% if @has_selection %>
 ## Selected text to summarize:
 <%= @selection %>

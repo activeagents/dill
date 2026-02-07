@@ -92,6 +92,53 @@
         </div>
       <% end %>
 
+      <% if @source.outline? %>
+        <div class="outline-section-mapping pad border rounded margin-block-end">
+          <h2 class="txt-medium margin-block-end">Map Outline to Report Sections</h2>
+          <p class="txt-small txt-faint margin-block-end">Link this outline to specific sections so the AI uses it as context when generating content for those sections.</p>
+
+          <% sections = @report.sections.active.positioned %>
+          <% if sections.any? %>
+            <div class="outline-mapping-list">
+              <% sections.each do |section| %>
+                <% next unless section.sectionable.respond_to?(:tagged_with?) %>
+                <div class="outline-mapping-row flex align-center justify-between gap pad-half border-bottom">
+                  <div class="flex align-center gap-half">
+                    <span class="txt-medium"><%= section.title %></span>
+                    <span class="txt-small txt-faint">(<%= section.sectionable_name %>)</span>
+                  </div>
+
+                  <% if section.sectionable.tagged_with?(@source) %>
+                    <div class="flex align-center gap-half">
+                      <span class="status-badge status-badge--completed">Mapped</span>
+                      <% tag = section.sectionable.source_tags.find_by(source: @source) %>
+                      <%= button_to report_source_tagging_path(@report, @source, tag),
+                            method: :delete,
+                            class: "btn btn--small btn--negative",
+                            data: { turbo_confirm: "Unmap this section?" } do %>
+                        Unmap
+                      <% end %>
+                    </div>
+                  <% else %>
+                    <%= button_to report_source_taggings_path(@report, @source),
+                          method: :post,
+                          class: "btn btn--small btn--positive",
+                          params: {
+                            taggable_type: section.sectionable_type,
+                            taggable_id: section.sectionable_id
+                          } do %>
+                      Map
+                    <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <p class="txt-faint txt-small">No sections in this report yet. Add sections first, then map them to this outline.</p>
+          <% end %>
+        </div>
+      <% end %>
+
       <% if @source.extracted_content.present? %>
         <div class="source-content pad border rounded">
           <h2 class="txt-medium margin-block-end">Extracted Content</h2>
