@@ -1,0 +1,7 @@
+# Copy this file to terraform.tfvars and fill in your values
+project_id       = "your-gcp-project-id"
+region           = "us-central1"
+rails_master_key = "your-rails-master-key-from-config/master.key"
+
+# Optional: set a custom domain
+# domain = "dill.example.com"
