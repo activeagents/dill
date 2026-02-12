@@ -23,11 +23,15 @@ if [ ! -f "$SCRIPT_DIR/terraform.tfvars" ]; then
   exit 1
 fi
 
-# Parse project_id and region from tfvars
-PROJECT_ID=$(grep 'project_id' "$SCRIPT_DIR/terraform.tfvars" | sed 's/.*= *"\(.*\)"/\1/')
-REGION=$(grep 'region' "$SCRIPT_DIR/terraform.tfvars" | sed 's/.*= *"\(.*\)"/\1/')
-APP_NAME=$(grep 'app_name' "$SCRIPT_DIR/terraform.tfvars" | sed 's/.*= *"\(.*\)"/\1/' || echo "dill")
+# Initialize Terraform and read variables using terraform console to avoid brittle parsing
+(
+  cd "$SCRIPT_DIR"
+  terraform init -input=false >/dev/null
+)
 
+PROJECT_ID=$(cd "$SCRIPT_DIR" && terraform console -input=false -var-file="terraform.tfvars" -execute='var.project_id' | tr -d '\r')
+REGION=$(cd "$SCRIPT_DIR" && terraform console -input=false -var-file="terraform.tfvars" -execute='var.region' | tr -d '\r')
+APP_NAME=$(cd "$SCRIPT_DIR" && terraform console -input=false -var-file="terraform.tfvars" -execute='try(var.app_name, "dill")' | tr -d '\r' || echo "dill")
 if [ -z "$APP_NAME" ] || [ "$APP_NAME" = "dill" ]; then
   APP_NAME="dill"
 fi
