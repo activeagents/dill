@@ -41,6 +41,7 @@
 playwright-report/
 playwright/.auth/
 test-results/
+screenshots/
 
 # Terraform
 terraform/.terraform/
