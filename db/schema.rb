@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_06_120000) do
   create_table "accesses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "level", null: false
@@ -99,6 +99,8 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
     t.text "generated_content"
     t.json "metadata"
     t.text "original_content"
+    t.json "outline_match_data", default: {}
+    t.integer "outline_source_id"
     t.integer "parent_fragment_id"
     t.integer "start_offset"
     t.string "status", default: "pending"
@@ -107,6 +109,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
     t.index ["content_hash"], name: "index_agent_fragments_on_content_hash"
     t.index ["contextable_type", "contextable_id"], name: "index_agent_fragments_on_contextable"
     t.index ["contextable_type", "contextable_id"], name: "index_agent_fragments_on_contextable_type_and_contextable_id"
+    t.index ["outline_source_id"], name: "index_agent_fragments_on_outline_source_id"
     t.index ["parent_fragment_id"], name: "index_agent_fragments_on_parent_fragment_id"
     t.index ["status"], name: "index_agent_fragments_on_status"
   end
@@ -310,6 +313,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
     t.text "raw_content"
     t.integer "report_id", null: false
     t.string "source_type", null: false
+    t.json "structured_content", default: {}
     t.text "summary"
     t.datetime "updated_at", null: false
     t.string "url"
@@ -326,8 +330,10 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
     t.datetime "created_at", null: false
     t.integer "end_offset"
     t.text "original_text"
+    t.text "reasoning"
     t.datetime "resolved_at"
     t.integer "resolved_by_id"
+    t.string "source_category"
     t.integer "start_offset"
     t.string "status", default: "pending", null: false
     t.integer "suggestable_id", null: false
@@ -338,6 +344,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
     t.index ["ai_generated"], name: "index_suggestions_on_ai_generated"
     t.index ["author_id"], name: "index_suggestions_on_author_id"
     t.index ["resolved_by_id"], name: "index_suggestions_on_resolved_by_id"
+    t.index ["source_category"], name: "index_suggestions_on_source_category"
     t.index ["status"], name: "index_suggestions_on_status"
     t.index ["suggestable_type", "suggestable_id"], name: "index_suggestions_on_suggestable"
     t.index ["suggestion_type"], name: "index_suggestions_on_suggestion_type"
@@ -368,6 +375,7 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_01_021319) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "agent_fragments", "agent_contexts"
   add_foreign_key "agent_fragments", "agent_fragments", column: "parent_fragment_id"
+  add_foreign_key "agent_fragments", "sources", column: "outline_source_id", on_delete: :nullify
   add_foreign_key "agent_generations", "agent_contexts"
   add_foreign_key "agent_generations", "agent_messages", column: "response_message_id"
   add_foreign_key "agent_messages", "agent_contexts"

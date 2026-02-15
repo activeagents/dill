@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Dill - AI-Powered Due Diligence Reports" %></title>
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta charset="UTF-8">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Streamline your due diligence process with AI-powered report generation, smart document analysis, and collaborative workflows.">
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <link rel="apple-touch-icon" href="/app-icon.png">
+
+    <%= stylesheet_link_tag :all, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body class="marketing">
+    <header class="marketing-header">
+      <nav class="marketing-nav">
+        <a href="/" class="marketing-logo">
+          <span class="marketing-logo__icon">🥒</span>
+          <span class="marketing-logo__text">Dill</span>
+        </a>
+        <div class="marketing-nav__links">
+          <% if signed_in? %>
+            <%= link_to "Open App", reports_path, class: "btn btn--reversed" %>
+          <% else %>
+            <%= link_to "Sign In", new_session_path, class: "btn" %>
+            <%= link_to "Get Started", new_session_path, class: "btn btn--reversed" %>
+          <% end %>
+        </div>
+      </nav>
+    </header>
+
+    <main class="marketing-main">
+      <%= yield %>
+    </main>
+
+    <footer class="marketing-footer">
+      <div class="marketing-footer__content">
+        <div class="marketing-footer__brand">
+          <span class="marketing-logo__icon">🥒</span>
+          <span>Dill</span>
+        </div>
+        <p class="marketing-footer__copy">&copy; <%= Date.current.year %> Dill. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<% content_for(:title) { "Dill - AI-Powered Due Diligence Reports" } %>
+
+<section class="hero">
+  <div class="hero__content">
+    <h1 class="hero__title">
+      Due diligence,<br>
+      <span class="hero__highlight">done right.</span>
+    </h1>
+    <p class="hero__subtitle">
+      Streamline your investment research with AI-powered report generation,
+      smart document analysis, and collaborative workflows.
+    </p>
+    <div class="hero__actions">
+      <%= link_to "Get Started", new_session_path, class: "btn btn--reversed btn--large" %>
+      <a href="#features" class="btn btn--large">Learn More</a>
+    </div>
+  </div>
+  <div class="hero__visual">
+    <div class="hero__mockup">
+      <div class="mockup-window">
+        <div class="mockup-header">
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+        </div>
+        <div class="mockup-content">
+          <div class="mockup-sidebar">
+            <div class="mockup-item"></div>
+            <div class="mockup-item mockup-item--active"></div>
+            <div class="mockup-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-title"></div>
+            <div class="mockup-text"></div>
+            <div class="mockup-text mockup-text--short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features">
+  <div class="features__header">
+    <h2 class="features__title">Everything you need for thorough research</h2>
+    <p class="features__subtitle">Built for investment professionals who value depth and accuracy.</p>
+  </div>
+
+  <div class="features__grid">
+    <div class="feature">
+      <div class="feature__icon">📄</div>
+      <h3 class="feature__title">Smart Document Analysis</h3>
+      <p class="feature__description">
+        Upload financial statements, pitch decks, and contracts. Our AI extracts key insights and flags potential concerns automatically.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">🤖</div>
+      <h3 class="feature__title">AI Writing Assistant</h3>
+      <p class="feature__description">
+        Generate professional report sections, improve your writing, and ensure consistency across your entire due diligence process.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">📊</div>
+      <h3 class="feature__title">Structured Reports</h3>
+      <p class="feature__description">
+        Organize findings into chapters, sections, and findings. Create comprehensive reports that tell a complete investment story.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">🔗</div>
+      <h3 class="feature__title">Source Management</h3>
+      <p class="feature__description">
+        Track every claim back to its source. Keep your research organized and your conclusions defensible.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">👥</div>
+      <h3 class="feature__title">Team Collaboration</h3>
+      <p class="feature__description">
+        Work together seamlessly with shared reports, real-time updates, and clear ownership of each section.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">📤</div>
+      <h3 class="feature__title">Easy Publishing</h3>
+      <p class="feature__description">
+        Share reports internally or externally with beautiful, professional formatting ready for stakeholder review.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta__content">
+    <h2 class="cta__title">Ready to streamline your due diligence?</h2>
+    <p class="cta__subtitle">Start creating better reports today.</p>
+    <%= link_to "Get Started Free", new_session_path, class: "btn btn--reversed btn--large" %>
+  </div>
+</section>

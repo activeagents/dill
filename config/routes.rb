@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   mount MissionControl::Jobs::Engine, at: "/jobs"
 
-  root "reports#index"
+  # Landing page
+  root "static_pages#home"
+
+  # App routes
+  get "reports", to: "reports#index", as: :reports
 
   resource :first_run, only: %i[ show create ]
 
