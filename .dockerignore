@@ -10,9 +10,11 @@ terraform/
 node_modules/
 e2e/
 test/
+spec/
 playwright-report/
 playwright/
 test-results/
+screenshots/
 
 # IDE and editor files
 .idea/
