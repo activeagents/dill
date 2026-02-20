@@ -7,6 +7,7 @@ gem "rails", github: "rails/rails"
 # Drivers
 gem "sqlite3", "~> 2.2"
 gem "redis", ">= 4.0.1"
+gem "connection_pool", "~> 2.5"  # Pin to 2.x for Rails edge compatibility
 
 # Deployment
 gem "puma", ">= 5.0"
@@ -52,7 +53,7 @@ gem "reactionview", "~> 0.1.2"
 
 # AI Integration
 gem "activeagent", "~> 1.0.1"
-gem "solid_agent", "~> 0.1.1"
+gem "solid_agent", github: "activeagents/solid_agent"
 gem "openai"
 gem "ruby-anthropic"  # For Anthropic/Claude support
 gem "pdf-reader"  # For PDF analysis

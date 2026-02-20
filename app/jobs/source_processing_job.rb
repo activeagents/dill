@@ -217,7 +217,7 @@ class SourceProcessingJob < ApplicationJob
       stripped = line.strip
 
       # Detect markdown headings (# ## ### etc.)
-      if stripped.match?(/\A#{1,6}\s/)
+      if stripped.match?(/\A\#{1,6}\s/)
         # Save previous section
         sections << finalize_section(current_section) if current_section
 

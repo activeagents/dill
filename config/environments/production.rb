@@ -40,7 +40,7 @@ Rails.application.configure do
   # for everything.
   config.log_level = ENV.fetch("RAILS_LOG_LEVEL", "info")
 
-  # Cache in memory for now
+  # Cache in Redis
   config.cache_store = :redis_cache_store
 
   # Assets are cacheable
@@ -63,7 +63,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # SQLite is good, actually
-  config.active_record.sqlite3_production_warning = false
+  # config.active_record.sqlite3_production_warning = false
 
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = { database: { writing: :queue } }

@@ -1,8 +1,17 @@
 GIT
-  remote: https://github.com/basecamp/useragent.git
-  revision: 746e37ba93cef6399920d18ad88903db92ba4e30
+  remote: https://github.com/activeagents/solid_agent.git
+  revision: eeba5984270ca28f10610c0a46433004c9bc5dba
   specs:
-    useragent (0.16.10)
+    solid_agent (0.1.1)
+      activeagent (>= 1.0.0)
+      activerecord (>= 7.0)
+      activesupport (>= 7.0)
+
+GIT
+  remote: https://github.com/basecamp/useragent.git
+  revision: 433ca320a42db1266c4b89df74d0abdb9a880c5e
+  specs:
+    useragent (0.16.11)
 
 GIT
   remote: https://github.com/rails/rails.git
@@ -141,8 +150,8 @@ GEM
       capybara
       playwright-ruby-client (>= 1.16.0)
     chunky_png (1.4.0)
-    concurrent-ruby (1.3.5)
-    connection_pool (2.5.4)
+    concurrent-ruby (1.3.6)
+    connection_pool (2.5.5)
     crass (1.0.6)
     cuprite (0.17)
       capybara (~> 3.0)
@@ -194,7 +203,7 @@ GEM
     herb (0.7.5-x86_64-darwin)
     herb (0.7.5-x86_64-linux-gnu)
     herb (0.7.5-x86_64-linux-musl)
-    i18n (1.14.7)
+    i18n (1.14.8)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
       mini_magick (>= 4.9.5, < 6)
@@ -211,11 +220,11 @@ GEM
     jbuilder (2.14.1)
       actionview (>= 7.0.0)
       activesupport (>= 7.0.0)
-    json (2.15.1)
+    json (2.18.1)
     language_server-protocol (3.17.0.5)
     lint_roller (1.1.0)
     logger (1.7.0)
-    loofah (2.24.1)
+    loofah (2.25.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
     mail (2.8.1)
@@ -232,7 +241,8 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.26.0)
+    minitest (6.0.1)
+      prism (~> 1.5)
     mission_control-jobs (1.1.0)
       actioncable (>= 7.1)
       actionpack (>= 7.1)
@@ -256,21 +266,21 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.18.10-aarch64-linux-gnu)
+    nokogiri (1.19.1-aarch64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.10-aarch64-linux-musl)
+    nokogiri (1.19.1-aarch64-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.18.10-arm-linux-gnu)
+    nokogiri (1.19.1-arm-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.10-arm-linux-musl)
+    nokogiri (1.19.1-arm-linux-musl)
       racc (~> 1.4)
-    nokogiri (1.18.10-arm64-darwin)
+    nokogiri (1.19.1-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.10-x86_64-darwin)
+    nokogiri (1.19.1-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.18.10-x86_64-linux-gnu)
+    nokogiri (1.19.1-x86_64-linux-gnu)
       racc (~> 1.4)
-    nokogiri (1.18.10-x86_64-linux-musl)
+    nokogiri (1.19.1-x86_64-linux-musl)
       racc (~> 1.4)
     openai (0.36.0)
       connection_pool
@@ -304,7 +314,7 @@ GEM
       nio4r (~> 2.0)
     raabro (1.4.0)
     racc (1.8.1)
-    rack (3.2.3)
+    rack (3.2.5)
     rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -387,10 +397,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    solid_agent (0.1.1)
-      activeagent (>= 1.0.0)
-      activerecord (>= 7.0)
-      activesupport (>= 7.0)
     solid_queue (1.2.4)
       activejob (>= 7.1)
       activerecord (>= 7.1)
@@ -415,7 +421,7 @@ GEM
     thruster (0.1.16-arm64-darwin)
     thruster (0.1.16-x86_64-darwin)
     thruster (0.1.16-x86_64-linux)
-    timeout (0.4.3)
+    timeout (0.6.0)
     tsort (0.2.0)
     ttfunk (1.8.0)
       bigdecimal (~> 3.1)
@@ -427,7 +433,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uri (1.0.4)
+    uri (1.1.1)
     web-console (4.2.1)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -461,6 +467,7 @@ DEPENDENCIES
   brakeman
   capybara
   capybara-playwright-driver
+  connection_pool (~> 2.5)
   cuprite
   debug
   faker
@@ -482,7 +489,7 @@ DEPENDENCIES
   rubocop-rails-omakase
   ruby-anthropic
   selenium-webdriver
-  solid_agent (~> 0.1.1)
+  solid_agent!
   solid_queue
   sqlite3 (~> 2.2)
   stimulus-rails
