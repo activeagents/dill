@@ -4,22 +4,12 @@ class FirstRunsController < ApplicationController
   before_action :prevent_running_after_setup
 
   def show
-    @user = User.new
-  end
-
-  def create
-    user = FirstRun.create!(user_params)
-    start_new_session_for user
-
-    redirect_to root_url
+    # First run redirects to SSO - first user becomes admin
+    session[:first_run] = true
   end
 
   private
     def prevent_running_after_setup
       redirect_to root_url if User.any?
-    end
-
-    def user_params
-      params.require(:user).permit(:name, :email_address, :password)
     end
 end

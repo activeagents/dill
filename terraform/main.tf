@@ -54,15 +54,37 @@ resource "google_secret_manager_secret_version" "rails_master_key" {
   secret_data = var.rails_master_key
 }
 
+# Store Google OAuth client secret in Secret Manager
+resource "google_secret_manager_secret" "google_client_secret" {
+  secret_id = "${var.app_name}-google-client-secret"
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_secret_manager_secret_version" "google_client_secret" {
+  secret      = google_secret_manager_secret.google_client_secret.id
+  secret_data = var.google_client_secret
+}
+
 # Service account for Cloud Run
 resource "google_service_account" "cloud_run" {
   account_id   = "${var.app_name}-run-sa"
   display_name = "${var.app_name} Cloud Run Service Account"
 }
 
-# Grant the service account access to read the secret
-resource "google_secret_manager_secret_iam_member" "secret_access" {
+# Grant the service account access to read secrets
+resource "google_secret_manager_secret_iam_member" "rails_master_key_access" {
   secret_id = google_secret_manager_secret.rails_master_key.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+
+resource "google_secret_manager_secret_iam_member" "google_client_secret_access" {
+  secret_id = google_secret_manager_secret.google_client_secret.id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.cloud_run.email}"
 }
@@ -122,6 +144,32 @@ resource "google_cloud_run_v2_service" "app" {
         }
       }
 
+      # Google OAuth SSO configuration
+      env {
+        name  = "GOOGLE_CLIENT_ID"
+        value = var.google_client_id
+      }
+
+      env {
+        name = "GOOGLE_CLIENT_SECRET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.google_client_secret.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      env {
+        name  = "ALLOWED_DOMAINS"
+        value = var.allowed_domains
+      }
+
+      env {
+        name  = "AUTO_PROVISION_USERS"
+        value = var.auto_provision_users ? "true" : "false"
+      }
+
       # Startup probe — Rails may need time to boot
       startup_probe {
         initial_delay_seconds = 5
@@ -146,6 +194,7 @@ resource "google_cloud_run_v2_service" "app" {
     google_project_service.apis,
     google_artifact_registry_repository.app,
     google_secret_manager_secret_version.rails_master_key,
+    google_secret_manager_secret_version.google_client_secret,
   ]
 }
 

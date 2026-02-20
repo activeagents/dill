@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_06_120000) do
+ActiveRecord::Schema[8.2].define(version: 2026_02_20_213309) do
   create_table "accesses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "level", null: false
@@ -359,14 +359,18 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_06_120000) do
 
   create_table "users", force: :cascade do |t|
     t.boolean "active", default: true
+    t.string "avatar_url"
     t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "name", null: false
-    t.string "password_digest", null: false
+    t.string "password_digest"
+    t.string "provider"
     t.integer "role", null: false
+    t.string "uid"
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["name"], name: "index_users_on_name", unique: true
+    t.index ["provider", "uid"], name: "index_users_on_provider_and_uid", unique: true, where: "provider IS NOT NULL"
   end
 
   add_foreign_key "accesses", "reports"

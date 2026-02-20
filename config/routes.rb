@@ -9,11 +9,15 @@ Rails.application.routes.draw do
 
   resource :first_run, only: %i[ show create ]
 
-  resource :session, only: %i[ new create destroy ] do
+  resource :session, only: %i[ new destroy ] do
     scope module: "sessions" do
       resources :transfers, only: %i[ show update ]
     end
   end
+
+  # OmniAuth routes
+  get "/auth/:provider/callback", to: "omniauth_callbacks#google_oauth2", as: :omniauth_callback
+  get "/auth/failure", to: "omniauth_callbacks#failure", as: :omniauth_failure
 
   get "join/:join_code", to: "users#new", as: :join
   post "join/:join_code", to: "users#create"
