@@ -185,12 +185,12 @@ resource "google_cloud_run_v2_service" "app" {
         value = var.auto_provision_users ? "true" : "false"
       }
 
-      # Startup probe — Rails may need time to boot
+      # Startup probe — Rails needs time to boot (thruster serves loading page meanwhile)
       startup_probe {
-        initial_delay_seconds = 5
-        timeout_seconds       = 3
-        period_seconds        = 5
-        failure_threshold     = 10
+        initial_delay_seconds = 10
+        timeout_seconds       = 5
+        period_seconds        = 10
+        failure_threshold     = 18
         http_get {
           path = "/up"
         }
