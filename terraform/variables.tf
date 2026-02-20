@@ -28,16 +28,9 @@ variable "domain" {
 }
 
 # Google OAuth SSO Configuration
-variable "google_client_id" {
-  description = "Google OAuth2 client ID for SSO"
+variable "oauth_support_email" {
+  description = "Support email for OAuth consent screen (must be a Google Workspace email)"
   type        = string
-  sensitive   = true
-}
-
-variable "google_client_secret" {
-  description = "Google OAuth2 client secret for SSO"
-  type        = string
-  sensitive   = true
 }
 
 variable "allowed_domains" {

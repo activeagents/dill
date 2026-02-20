@@ -54,6 +54,21 @@ resource "google_secret_manager_secret_version" "rails_master_key" {
   secret_data = var.rails_master_key
 }
 
+# OAuth Brand (Consent Screen)
+resource "google_iap_brand" "app" {
+  support_email     = var.oauth_support_email
+  application_title = "Dill"
+  project           = var.project_id
+
+  depends_on = [google_project_service.apis]
+}
+
+# OAuth Client
+resource "google_iap_client" "app" {
+  display_name = "Dill Web App"
+  brand        = google_iap_brand.app.name
+}
+
 # Store Google OAuth client secret in Secret Manager
 resource "google_secret_manager_secret" "google_client_secret" {
   secret_id = "${var.app_name}-google-client-secret"
@@ -67,7 +82,7 @@ resource "google_secret_manager_secret" "google_client_secret" {
 
 resource "google_secret_manager_secret_version" "google_client_secret" {
   secret      = google_secret_manager_secret.google_client_secret.id
-  secret_data = var.google_client_secret
+  secret_data = google_iap_client.app.secret
 }
 
 # Service account for Cloud Run
@@ -147,7 +162,7 @@ resource "google_cloud_run_v2_service" "app" {
       # Google OAuth SSO configuration
       env {
         name  = "GOOGLE_CLIENT_ID"
-        value = var.google_client_id
+        value = google_iap_client.app.client_id
       }
 
       env {

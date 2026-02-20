@@ -5,3 +5,8 @@ rails_master_key = "your-rails-master-key-from-config/master.key"
 
 # Optional: set a custom domain
 # domain = "dill.example.com"
+
+# Google SSO Configuration
+oauth_support_email  = "admin@yourdomain.com"  # Must be a valid Google Workspace email
+allowed_domains      = "yourdomain.com"        # Comma-separated list of allowed email domains
+auto_provision_users = false                   # Set to true to auto-create users on first login
