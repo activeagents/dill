@@ -15,7 +15,7 @@ ENV RAILS_ENV="production" \
 
 
 # Throw-away build stage to reduce size of final image
-FROM --platform=$TARGETPLATFORM base as build
+FROM base as build
 
 # Install packages needed to build gems
 RUN apt-get update -qq && \
