@@ -1,6 +1,6 @@
 output "service_url" {
   description = "The URL of the deployed Cloud Run service"
-  value       = google_cloud_run_v2_service.app.uri
+  value       = var.domain != "" ? "https://${var.domain}" : google_cloud_run_v2_service.app.uri
 }
 
 output "artifact_registry_repository" {
@@ -20,5 +20,5 @@ output "oauth_client_id" {
 
 output "oauth_callback_url" {
   description = "The OAuth callback URL to configure in Google Cloud Console"
-  value       = "${google_cloud_run_v2_service.app.uri}/auth/google_oauth2/callback"
+  value       = var.domain != "" ? "https://${var.domain}/auth/google_oauth2/callback" : "${google_cloud_run_v2_service.app.uri}/auth/google_oauth2/callback"
 }
