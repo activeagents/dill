@@ -44,3 +44,18 @@ variable "auto_provision_users" {
   type        = bool
   default     = false
 }
+
+# Porkbun DNS Configuration
+variable "porkbun_api_key" {
+  description = "Porkbun API key for DNS management"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "porkbun_secret_key" {
+  description = "Porkbun secret API key for DNS management"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

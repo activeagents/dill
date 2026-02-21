@@ -3,10 +3,15 @@ project_id       = "your-gcp-project-id"
 region           = "us-central1"
 rails_master_key = "your-rails-master-key-from-config/master.key"
 
-# Optional: set a custom domain
-# domain = "dill.example.com"
+# Optional: set a custom domain (e.g., "dill.vc")
+domain = ""
 
 # Google SSO Configuration
 oauth_support_email  = "admin@yourdomain.com"  # Must be a valid Google Workspace email
 allowed_domains      = "yourdomain.com"        # Comma-separated list of allowed email domains
 auto_provision_users = false                   # Set to true to auto-create users on first login
+
+# Porkbun DNS Configuration (optional - only needed if using Porkbun for DNS)
+# Get API keys from https://porkbun.com/account/api
+porkbun_api_key    = ""  # Your Porkbun API key
+porkbun_secret_key = ""  # Your Porkbun secret API key

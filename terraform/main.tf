@@ -6,12 +6,21 @@ terraform {
       source  = "hashicorp/google"
       version = "~> 5.0"
     }
+    porkbun = {
+      source  = "marcfrederick/porkbun"
+      version = "~> 1.3"
+    }
   }
 }
 
 provider "google" {
   project = var.project_id
   region  = var.region
+}
+
+provider "porkbun" {
+  api_key        = var.porkbun_api_key
+  secret_api_key = var.porkbun_secret_key
 }
 
 # Enable required GCP APIs
@@ -235,4 +244,43 @@ resource "google_cloud_run_domain_mapping" "custom_domain" {
   spec {
     route_name = google_cloud_run_v2_service.app.name
   }
+}
+
+# =============================================================================
+# Porkbun DNS Configuration (only created when domain and API keys are set)
+# =============================================================================
+
+locals {
+  # Google Cloud Run load balancer IPs
+  cloud_run_ips = [
+    "216.239.32.21",
+    "216.239.34.21",
+    "216.239.36.21",
+    "216.239.38.21",
+  ]
+
+  # Check if Porkbun is configured
+  porkbun_configured = var.porkbun_api_key != "" && var.porkbun_secret_key != "" && var.domain != ""
+}
+
+# A records for apex domain (dill.vc)
+resource "porkbun_dns_record" "apex_a" {
+  for_each = local.porkbun_configured ? toset(local.cloud_run_ips) : []
+
+  domain    = var.domain
+  subdomain = ""
+  type      = "A"
+  content   = each.value
+  ttl       = 600
+}
+
+# CNAME record for www subdomain
+resource "porkbun_dns_record" "www_cname" {
+  count = local.porkbun_configured ? 1 : 0
+
+  domain    = var.domain
+  subdomain = "www"
+  type      = "CNAME"
+  content   = "ghs.googlehosted.com"
+  ttl       = 600
 }
