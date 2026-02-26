@@ -1,12 +1,12 @@
 require "test_helper"
 
-class BooksControllerTest < ActionDispatch::IntegrationTest
+class ReportsControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in :kevin
   end
 
   test "index lists the current user's reports" do
-    get root_url
+    get reports_url
 
     assert_response :success
     assert_select "h2", text: "Handbook"
@@ -16,7 +16,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
   test "index includes published reports, even when the user does not have access" do
     reports(:manual).update!(published: true)
 
-    get root_url
+    get reports_url
 
     assert_response :success
     assert_select "h2", text: "Handbook"
@@ -27,7 +27,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
     reports(:manual).update!(published: true)
 
     sign_out
-    get root_url
+    get reports_url
 
     assert_response :success
     assert_select "h2", text: "Handbook", count: 0
@@ -36,7 +36,7 @@ class BooksControllerTest < ActionDispatch::IntegrationTest
 
   test "index redirects to login if not signed in and no published reports exist" do
     sign_out
-    get root_url
+    get reports_url
 
     assert_redirected_to new_session_url
   end

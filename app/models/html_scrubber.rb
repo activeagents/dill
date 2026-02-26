@@ -5,7 +5,7 @@ class HtmlScrubber < Rails::Html::PermitScrubber
   ].freeze
 
   EXTRA_ATTRIBUTES = %w[
-    data-origin data-source-id data-suggestion-id data-reason
+    id style data-origin data-source-id data-suggestion-id data-reason
   ].freeze
 
   def initialize

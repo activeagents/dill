@@ -6,10 +6,10 @@ class PicturesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update picture" do
-    get edit_leafable_path(sections(:reading_picture))
+    get edit_sectionable_path(sections(:reading_picture))
     assert_response :ok
 
-    put leafable_path(sections(:reading_picture)), params: {
+    put sectionable_path(sections(:reading_picture)), params: {
       section: { title: "New picture" },
       picture: {
         image: fixture_file_upload("white-rabbit.webp", "image/webp")
@@ -23,10 +23,10 @@ class PicturesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update caption" do
-    get edit_leafable_path(sections(:reading_picture))
+    get edit_sectionable_path(sections(:reading_picture))
     assert_response :ok
 
-    put leafable_path(sections(:reading_picture)), params: {
+    put sectionable_path(sections(:reading_picture)), params: {
       picture: {
         caption: "New caption"
       } }

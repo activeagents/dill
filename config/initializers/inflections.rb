@@ -1,3 +1,2 @@
-ActiveSupport::Inflector.inflections(:en) do |inflect|
-  inflect.irregular "leaf", "leaves"
-end
+# ActiveSupport::Inflector.inflections(:en) do |inflect|
+# end

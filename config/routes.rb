@@ -10,7 +10,7 @@ Rails.application.routes.draw do
 
   resource :first_run, only: %i[ show create ]
 
-  resource :session, only: %i[ new destroy ] do
+  resource :session, only: %i[ new create destroy ] do
     scope module: "sessions" do
       resources :transfers, only: %i[ show update ]
     end

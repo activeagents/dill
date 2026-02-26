@@ -6,9 +6,9 @@ class Pages::EditsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show an edit" do
-    sections(:welcome_page).edit leafable_params: { body: "Completely new content" }
+    sections(:welcome_page).edit sectionable_params: { body: "Completely new content" }
 
-    get page_edit_url(sections(:welcome_page), sections(:welcome_page).edits.last)
+    get page_edit_url(sections(:welcome_page).page, sections(:welcome_page).edits.last)
 
     assert_response :success
     assert_select "p", /such a great handbook/
@@ -16,9 +16,9 @@ class Pages::EditsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show latest edit" do
-    sections(:welcome_page).edit leafable_params: { body: "Updated" }
+    sections(:welcome_page).edit sectionable_params: { body: "Updated" }
 
-    get page_edit_url(sections(:welcome_page), "latest")
+    get page_edit_url(sections(:welcome_page).page, "latest")
 
     assert_response :success
     assert_select "p", /such a great handbook/

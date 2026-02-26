@@ -6,7 +6,7 @@ class User < ApplicationRecord
 
   has_many :accesses, dependent: :destroy
   has_many :reports, through: :accesses
-  has_many :leaves, through: :reports
+  has_many :sections, through: :reports
 
   after_create :grant_access_to_everyone_reports
 

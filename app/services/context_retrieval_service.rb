@@ -11,12 +11,12 @@ class ContextRetrievalService
     where why how any
   ].freeze
 
-  attr_reader :leaf, :book, :query
+  attr_reader :section, :report, :query
 
-  def initialize(leaf, query: nil)
-    @leaf = leaf
-    @book = leaf.book
-    @query = query || leaf.searchable_content
+  def initialize(section, query: nil)
+    @section = section
+    @report = section.report
+    @query = query || section.searchable_content
   end
 
   def retrieve(limit: 5)
@@ -29,13 +29,13 @@ class ContextRetrievalService
     related = retrieve(limit: limit)
     return [] if related.empty?
 
-    related.map do |related_leaf|
+    related.map do |related_section|
       {
-        id: related_leaf.id,
-        title: related_leaf.title,
-        type: related_leaf.leafable_type,
-        content: related_leaf.searchable_content&.truncate(1000),
-        relevance: related_leaf.try(:relevance_score)
+        id: related_section.id,
+        title: related_section.title,
+        type: related_section.sectionable_type,
+        content: related_section.searchable_content&.truncate(1000),
+        relevance: related_section.try(:relevance_score)
       }
     end
   end
@@ -48,11 +48,9 @@ class ContextRetrievalService
 
     search_query = build_fts_query(key_terms)
 
-    # Use with_search_results_for directly to avoid the extra SELECT columns
-    # that conflict with count operations
-    book.leaves
+    report.sections
         .active
-        .where.not(id: leaf.id)
+        .where.not(id: section.id)
         .with_search_results_for(search_query)
         .favoring_title
         .limit(limit)

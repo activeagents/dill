@@ -85,14 +85,14 @@ class WritingAssistantAgent < ApplicationAgent
 
   def fetch_related_content
     contextable = params[:contextable]
-    return nil unless contextable.respond_to?(:leaf)
+    return nil unless contextable.respond_to?(:section)
 
-    leaf = contextable.leaf
-    return nil unless leaf
+    section = contextable.section
+    return nil unless section
 
     # Use the selection or content to find related sections
     query_text = @selection.presence || @content
-    leaf.related_context(limit: 3, query: query_text)
+    section.related_context(limit: 3, query: query_text)
   rescue => e
     Rails.logger.warn "[WritingAssistantAgent] Failed to fetch related content: #{e.message}"
     nil
@@ -194,7 +194,7 @@ class WritingAssistantAgent < ApplicationAgent
 
   # Sets up context persistence and triggers prompt rendering
   def setup_context_and_prompt
-    # Create a new context, optionally associated with a contextable record (Page, Book, etc.)
+    # Create a new context, optionally associated with a contextable record (Page, Report, etc.)
     # Store the input parameters in context options for full audit trail
     create_context(
       contextable: params[:contextable],
