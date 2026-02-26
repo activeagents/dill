@@ -24,8 +24,8 @@ class Section::SearchableTest < ActiveSupport::TestCase
   end
 
   test "sections with no searchable content are not indexed" do
-    sections = Section.search("welcome")
-    assert_not_includes sections, sections(:welcome_section)
+    sections = Section.search("reading")
+    assert_not_includes sections, sections(:reading_picture)
   end
 
   test "matches_for_highlight returns the matching terms, longest first" do

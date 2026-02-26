@@ -1,12 +1,12 @@
 require "test_helper"
 
-class LeafablesControllerTest < ActionDispatch::IntegrationTest
+class SectionablesControllerTest < ActionDispatch::IntegrationTest
   setup do
     sign_in :kevin
   end
 
   test "show" do
-    get leafable_slug_path(sections(:welcome_page))
+    get sectionable_slug_path(sections(:welcome_page))
 
     assert_response :success
     assert_select "p", "This is such a great handbook."
@@ -16,7 +16,7 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
     sign_out
     reports(:handbook).update!(published: true)
 
-    get leafable_slug_path(sections(:welcome_page))
+    get sectionable_slug_path(sections(:welcome_page))
 
     assert_response :success
     assert_select "p", "This is such a great handbook."
@@ -24,7 +24,7 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
 
   test "show highlights search terms" do
     Section.reindex_all
-    get leafable_slug_path(sections(:welcome_page)), params: { search: "great" }
+    get sectionable_slug_path(sections(:welcome_page)), params: { search: "great" }
 
     assert_response :success
     assert_select "mark", "great"
@@ -33,7 +33,7 @@ class LeafablesControllerTest < ActionDispatch::IntegrationTest
   test "show does not allow public access to an unpublished report" do
     sign_out
 
-    get leafable_slug_path(sections(:welcome_page))
+    get sectionable_slug_path(sections(:welcome_page))
 
     assert_response :not_found
   end

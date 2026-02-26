@@ -5,7 +5,7 @@
   </span>
 
   <%= link_to sectionable_path(section), class: "toc__thumbnail", data: { turbo_frame: "_top" } do %>
-    <%= section.section.body if section.section? %>
+    <%= section.text_block.body if section.text_block? %>
     <%= section.sectionable.body.to_html if section.page? %>
     <%= image_tag section.sectionable.image.variant(:large) if section.picture&.image&.attached? %>
   <% end %>

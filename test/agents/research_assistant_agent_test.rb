@@ -11,16 +11,16 @@ class ResearchAssistantAgentTest < ActiveSupport::TestCase
     assert ResearchAssistantAgent.instance_methods.include?(:research)
   end
 
-  test "has public web_search tool method" do
-    assert ResearchAssistantAgent.public_instance_methods.include?(:web_search)
+  test "has navigate tool method" do
+    assert ResearchAssistantAgent.public_instance_methods.include?(:navigate)
   end
 
-  test "has public read_webpage tool method" do
-    assert ResearchAssistantAgent.public_instance_methods.include?(:read_webpage)
+  test "has extract_text tool method" do
+    assert ResearchAssistantAgent.public_instance_methods.include?(:extract_text)
   end
 
-  test "has public fetch_top_pages tool method" do
-    assert ResearchAssistantAgent.public_instance_methods.include?(:fetch_top_pages)
+  test "has extract_main_content tool method" do
+    assert ResearchAssistantAgent.public_instance_methods.include?(:extract_main_content)
   end
 
   test "research sets topic and context instance variables" do
@@ -34,17 +34,6 @@ class ResearchAssistantAgentTest < ActiveSupport::TestCase
     assert_equal "climate change", agent.instance_variable_get(:@topic)
     assert_equal "scientific article", agent.instance_variable_get(:@context)
     assert_equal "standard", agent.instance_variable_get(:@depth)
-  end
-
-  test "extract_url handles DuckDuckGo URL format" do
-    agent = ResearchAssistantAgent.new
-
-    # Test normal URL
-    normal_url = "https://example.com/page"
-    assert_equal normal_url, agent.send(:extract_url, normal_url)
-
-    # Test nil URL
-    assert_equal "", agent.send(:extract_url, nil)
   end
 
   test "broadcast_chunk does nothing without stream_id" do

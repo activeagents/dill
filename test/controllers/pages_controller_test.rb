@@ -6,32 +6,32 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "show" do
-    get leafable_path(sample_page_leaf("## Hello"))
+    get sectionable_path(sample_page_section("## Hello"))
 
     assert_response :ok
     assert_select "h2", text: /Hello/
   end
 
   test "show sanitizes dangerous content" do
-    get leafable_path(sample_page_leaf(%(<div id="test"><script>alert("ouch")</script></div>)))
+    get sectionable_path(sample_page_section(%(<div id="test"><script>alert("ouch")</script></div>)))
 
     assert_select "#test", html: %(alert("ouch"))
   end
 
   test "show with HTML content in the markdown" do
-    get leafable_path(sample_page_leaf(%(<div id="test"><div style="text-align:center;">Hello</div></div>)))
+    get sectionable_path(sample_page_section(%(<div id="test"><div style="text-align:center;">Hello</div></div>)))
 
     assert_select "#test", html: %(<div style="text-align:center;">Hello</div>)
   end
 
   test "show with iframes" do
-    get leafable_path(sample_page_leaf(%(<div id="test"><iframe src="http://example.com"></iframe></div>)))
+    get sectionable_path(sample_page_section(%(<div id="test"><iframe src="http://example.com"></iframe></div>)))
 
     assert_select "#test", html: %(<iframe src="http://example.com"></iframe>)
   end
 
   test "show with tables in the markdown" do
-    get leafable_path(sample_page_leaf(%(| name | food |\n| ---- | ---- |\n| Kevin | Pizza |)))
+    get sectionable_path(sample_page_section(%(| name | food |\n| ---- | ---- |\n| Kevin | Pizza |)))
 
     assert_select "table th", text: "name"
     assert_select "table th", text: "food"
@@ -68,10 +68,10 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update" do
-    get edit_leafable_path(sections(:welcome_page))
+    get edit_sectionable_path(sections(:welcome_page))
     assert_response :ok
 
-    put leafable_path(sections(:welcome_page)), params: { section: { title: "Better welcome" }, page: { body: "With even more interesting words." } }
+    put sectionable_path(sections(:welcome_page)), params: { section: { title: "Better welcome" }, page: { body: "With even more interesting words." } }
     assert_response :no_content
 
     updated_page = Page.last
@@ -80,7 +80,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   private
-    def sample_page_leaf(markdown)
+    def sample_page_section(markdown)
       reports(:handbook).press Page.new(body: markdown), title: "Sample"
     end
 end

@@ -6,6 +6,6 @@ module PageLeafScoped extend ActiveSupport::Concern
   private
     def set_section
       page = Page.find(params[:page_id])
-      @leaf = page.section
+      @section = page.section
     end
 end

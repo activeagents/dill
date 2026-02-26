@@ -9,9 +9,9 @@ class Pages::EditsController < ApplicationController
   private
     def set_edit
       if params[:id] == "latest"
-        @edit = @leaf.edits.last
+        @edit = @section.edits.last
       else
-        @edit = @leaf.edits.find(params[:id])
+        @edit = @section.edits.find(params[:id])
       end
     end
 end

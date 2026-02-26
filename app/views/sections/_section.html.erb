@@ -7,7 +7,7 @@
 
     <%= render "sections/delete", section: section %>
 
-    <div class="toc__thumbnail <%= "toc__thumbnail--dark" if section.section&.theme == "dark" %>">
+    <div class="toc__thumbnail <%= "toc__thumbnail--dark" if section.text_block&.theme == "dark" %>">
       <% if section.report.editable? %>
         <%= link_to edit_sectionable_path(section), class: "toc__link hide_from_reading_mode", data: { turbo_frame: "_top" } do %>
           <span class="for-screen-reader">Edit <%= section.title %></span>
@@ -22,7 +22,7 @@
         <% end %>
       <% end %>
 
-      <%= tag.span(simple_format(section.section.body), class: "txt-align-center") if section.section? %>
+      <%= tag.span(simple_format(section.text_block.body), class: "txt-align-center") if section.text_block? %>
 
       <%= sanitize_content section.page.html_preview if section.page? %>
 

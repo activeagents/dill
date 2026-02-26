@@ -139,6 +139,39 @@ class FileAnalyzerAgent < ApplicationAgent
     Rails.logger.error "[FileAnalyzer] Backtrace: #{e.backtrace.first(5).join("\n")}"
   end
 
+  # Encode image from a file path (for standalone file uploads via controller)
+  def encode_image_for_prompt
+    return unless @file_path && File.exist?(@file_path)
+
+    content_type = detect_content_type(@file_path)
+    @image_data = "data:#{content_type};base64,#{Base64.strict_encode64(File.binread(@file_path))}"
+  end
+
+  # Encode a file at the given path to base64
+  def encode_image(path)
+    return nil unless path && File.exist?(path)
+    Base64.strict_encode64(File.binread(path))
+  rescue
+    nil
+  end
+
+  # Detect content type from file magic bytes
+  def detect_content_type(file_path)
+    header = File.binread(file_path, 12)
+
+    if header.start_with?("\x89PNG".b)
+      "image/png"
+    elsif header.start_with?("\xFF\xD8\xFF".b)
+      "image/jpeg"
+    elsif header.start_with?("GIF".b)
+      "image/gif"
+    elsif header[0..3] == "RIFF".b && header[8..11] == "WEBP".b
+      "image/webp"
+    else
+      "application/octet-stream"
+    end
+  end
+
   def extract_pdf_content(file_path)
     # This would require pdf-reader gem
     # For now, returning placeholder

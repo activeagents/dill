@@ -8,9 +8,9 @@
   <%= render "sections/sidebar", report: @report %>
 <% end %>
 
-<% if @section.section? %>
+<% if @section.text_block? %>
   <div class="page--section <%= "theme--dark" if @section.sectionable.theme == "dark" %>">
-    <h1><%= highlight_searched_content @section, simple_format(@section.section.body), params[:search] %></h1>
+    <h1><%= highlight_searched_content @section, simple_format(@section.text_block.body), params[:search] %></h1>
   </div>
 <% elsif @section.page? %>
   <%= render "shared/content_legend", report: @report, section: @section %>

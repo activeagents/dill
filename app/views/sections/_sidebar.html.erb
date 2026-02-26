@@ -6,7 +6,7 @@
   </header>
 
   <% report.sections.active.with_sectionables.positioned.each do |section| %>
-    <li class="flex min-width <%= "section--section" if section.section? -%>">
+    <li class="flex min-width <%= "section--section" if section.text_block? -%>">
       <% if section.report.editable? %>
         <%= link_to edit_sectionable_path(section), class: "toc__title hide_from_reading_mode min-width", data: { turbo_frame: "_top" } do %>
           <span class="overflow-ellipsis"><%= section.title %></span>
