@@ -103,21 +103,21 @@ class FileAnalyzerAgentTest < ActiveSupport::TestCase
     assert_nil image_data
   end
 
-  test "extract_file_content reads file content" do
-    temp_file = @temp_dir.join('test.txt')
+  test "extract_document_content reads plain text files" do
+    temp_file = @temp_dir.join("test.txt")
     File.write(temp_file, "Hello, World!")
 
     agent = FileAnalyzerAgent.new
-    content = agent.send(:extract_file_content, temp_file.to_s)
+    content = agent.send(:extract_document_content, temp_file.to_s)
 
     assert_equal "Hello, World!", content
   end
 
-  test "extract_file_content returns error message when file cannot be read" do
+  test "extract_document_content returns nil for nil path" do
     agent = FileAnalyzerAgent.new
-    content = agent.send(:extract_file_content, '/nonexistent/file.txt')
+    content = agent.send(:extract_document_content, nil)
 
-    assert_equal "Unable to read file content", content
+    assert_nil content
   end
 
   test "encode_image returns nil for non-existent file" do

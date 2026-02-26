@@ -1,3 +1,16 @@
-FileAnalyzer#extract_text
+Extract and present the text content from this document in a clean, well-structured format.
 
-<%= @message %>, find me in app/views/file_analyzer_agent/extract_text.text.erb
+<% if @file_path.present? %>
+File: <%= File.basename(@file_path) %>
+<% end %>
+
+--- DOCUMENT CONTENT ---
+<%= @content %>
+--- END DOCUMENT CONTENT ---
+
+Instructions:
+- Clean up any extraction artifacts (broken words, stray characters, garbled encoding)
+- Preserve the document's logical structure (headings, sections, lists, tables)
+- Format the output as readable markdown
+- If tables are present, render them as markdown tables
+- Indicate any sections where text was unreadable with [unclear] markers

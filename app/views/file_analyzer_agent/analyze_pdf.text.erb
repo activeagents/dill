@@ -1,3 +1,27 @@
-FileAnalyzer#analyze_pdf
+Analyze the following PDF document and provide a comprehensive review.
 
-<%= @message %>, find me in app/views/file_analyzer_agent/analyze_pdf.text.erb
+<% if @metadata.present? %>
+Document metadata:
+<% if @metadata[:title].present? %>- Title: <%= @metadata[:title] %><% end %>
+<% if @metadata[:author].present? %>- Author: <%= @metadata[:author] %><% end %>
+<% if @metadata[:subject].present? %>- Subject: <%= @metadata[:subject] %><% end %>
+<% if @metadata[:creation_date].present? %>- Created: <%= @metadata[:creation_date] %><% end %>
+<% end %>
+<% if @page_count.present? %>
+Pages: <%= @page_count %>
+<% end %>
+<% if @analysis_type.present? && @analysis_type != "general" %>
+Analysis focus: <%= @analysis_type %>
+<% end %>
+
+--- DOCUMENT CONTENT ---
+<%= @content %>
+--- END DOCUMENT CONTENT ---
+
+Provide:
+1. A brief summary of what this document is about
+2. Key findings, data points, or arguments presented
+3. Notable sections or topics covered
+4. Any concerns, gaps, or areas that warrant further investigation
+
+Format your response in clear markdown with appropriate headings.

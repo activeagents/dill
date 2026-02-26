@@ -1,3 +1,16 @@
-FileAnalyzer#summarize_document
+Summarize the following document concisely for a due diligence review.
 
-<%= @message %>, find me in app/views/file_analyzer_agent/summarize_document.text.erb
+<% if @file_path.present? %>
+File: <%= File.basename(@file_path) %>
+<% end %>
+
+--- DOCUMENT CONTENT ---
+<%= @content %>
+--- END DOCUMENT CONTENT ---
+
+Provide:
+1. **Executive Summary** - 2-3 sentence overview of the document
+2. **Key Points** - Bulleted list of the most important facts, figures, and conclusions
+3. **Relevance** - How this document may be relevant to an investment due diligence process
+
+Keep the summary concise and actionable. Focus on facts and data rather than filler.
