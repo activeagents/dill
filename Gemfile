@@ -41,6 +41,7 @@ group :development, :test do
   gem "faker", require: false
   gem "brakeman", require: false
   gem "rubocop-rails-omakase", require: false
+  gem "minitest", "~> 5.0"  # Pin to 5.x; Minitest 6.0 breaks Rails 8.2 alpha LineFiltering
 end
 
 group :development do
