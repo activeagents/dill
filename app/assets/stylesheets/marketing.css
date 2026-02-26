@@ -305,3 +305,120 @@
   font-size: 0.875rem;
   margin: 0;
 }
+
+/* Hero V2 additions */
+.hero__link {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.hero__link:hover {
+  color: var(--color-link-hover, var(--color-link));
+}
+
+.hero__value-prop {
+  font-size: 1.125rem;
+  color: var(--color-ink);
+  line-height: 1.6;
+  max-inline-size: 36rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* How It Works Section */
+.how-it-works {
+  padding: 6rem var(--marketing-padding);
+  background: var(--color-bg);
+}
+
+.how-it-works__header {
+  text-align: center;
+  max-inline-size: 40rem;
+  margin-inline: auto;
+  margin-block-end: 4rem;
+}
+
+.how-it-works__title {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 700;
+  margin: 0 0 1rem;
+  letter-spacing: -0.01em;
+}
+
+.how-it-works__subtitle {
+  font-size: 1.125rem;
+  color: var(--color-subtle-dark);
+  margin: 0;
+}
+
+.how-it-works__steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem;
+  max-inline-size: var(--marketing-max-width);
+  margin-inline: auto;
+}
+
+.step {
+  text-align: center;
+  padding: 2rem;
+}
+
+.step__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  background: var(--color-link);
+  color: white;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 50%;
+  margin-block-end: 1.5rem;
+}
+
+.step__title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem;
+}
+
+.step__description {
+  color: var(--color-subtle-dark);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Trust Section */
+.trust {
+  padding: 4rem var(--marketing-padding);
+  background: var(--color-subtle-light);
+  border-block: 1px solid var(--color-subtle);
+}
+
+.trust__content {
+  max-inline-size: 48rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.trust__title {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 1rem;
+}
+
+.trust__description {
+  font-size: 1.125rem;
+  color: var(--color-subtle-dark);
+  line-height: 1.7;
+  margin: 0;
+}
+
+.trust__description a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

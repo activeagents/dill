@@ -1,0 +1,150 @@
+<% content_for(:title) { "Dill - AI-Powered Due Diligence Reports" } %>
+
+<section class="hero">
+  <div class="hero__content">
+    <h1 class="hero__title">
+      Don't get in a pickle,<br>
+      <span class="hero__highlight">do dill.</span>
+    </h1>
+    <p class="hero__subtitle">
+      Due Diligence — from the team at <a href="https://svsg.co" target="_blank" class="hero__link">SVSG</a>
+    </p>
+    <p class="hero__value-prop">
+      Get IC-ready memos faster. AI-powered analysis backed by seasoned consultants who've done 100+ deals.
+    </p>
+    <div class="hero__actions">
+      <%= link_to "Get Started", new_session_path, class: "btn btn--reversed btn--large" %>
+      <a href="#how-it-works" class="btn btn--large">See How It Works</a>
+    </div>
+  </div>
+  <div class="hero__visual">
+    <div class="hero__mockup">
+      <div class="mockup-window">
+        <div class="mockup-header">
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+          <span class="mockup-dot"></span>
+        </div>
+        <div class="mockup-content">
+          <div class="mockup-sidebar">
+            <div class="mockup-item"></div>
+            <div class="mockup-item mockup-item--active"></div>
+            <div class="mockup-item"></div>
+          </div>
+          <div class="mockup-main">
+            <div class="mockup-title"></div>
+            <div class="mockup-text"></div>
+            <div class="mockup-text mockup-text--short"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how-it-works" class="how-it-works">
+  <div class="how-it-works__header">
+    <h2 class="how-it-works__title">From data room to IC memo</h2>
+    <p class="how-it-works__subtitle">Stop drowning in documents. Start delivering insights.</p>
+  </div>
+
+  <div class="how-it-works__steps">
+    <div class="step">
+      <div class="step__number">1</div>
+      <h3 class="step__title">Upload Your Documents</h3>
+      <p class="step__description">
+        Drop in financials, pitch decks, contracts, and data room exports. We handle the extraction.
+      </p>
+    </div>
+
+    <div class="step">
+      <div class="step__number">2</div>
+      <h3 class="step__title">AI Surfaces What Matters</h3>
+      <p class="step__description">
+        Our AI flags risks, inconsistencies, and key metrics — so you focus on analysis, not admin.
+      </p>
+    </div>
+
+    <div class="step">
+      <div class="step__number">3</div>
+      <h3 class="step__title">Draft Your Memo</h3>
+      <p class="step__description">
+        Generate structured reports with AI assistance. Every claim linked to its source. Ready for partner review.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="features">
+  <div class="features__header">
+    <h2 class="features__title">Built for deal teams under pressure</h2>
+    <p class="features__subtitle">The tools you need to move fast without cutting corners.</p>
+  </div>
+
+  <div class="features__grid">
+    <div class="feature">
+      <div class="feature__icon">📄</div>
+      <h3 class="feature__title">Smart Document Analysis</h3>
+      <p class="feature__description">
+        Upload financial statements, pitch decks, and contracts. Our AI extracts key insights and flags potential concerns automatically.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">🤖</div>
+      <h3 class="feature__title">AI-Assisted Drafting</h3>
+      <p class="feature__description">
+        Generate first drafts of report sections. You review, edit, and own the final work — AI handles the heavy lifting.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">📊</div>
+      <h3 class="feature__title">IC-Ready Reports</h3>
+      <p class="feature__description">
+        Structured chapters, executive summaries, and findings organized the way your committee expects them.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">🔗</div>
+      <h3 class="feature__title">Defensible Sources</h3>
+      <p class="feature__description">
+        Every claim traced back to source documents. When partners ask "where did this come from?" — you'll know.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">🔒</div>
+      <h3 class="feature__title">Deal-Grade Security</h3>
+      <p class="feature__description">
+        Your data stays yours. Enterprise security, SOC 2 compliance, and strict access controls for sensitive deal materials.
+      </p>
+    </div>
+
+    <div class="feature">
+      <div class="feature__icon">👥</div>
+      <h3 class="feature__title">Team Collaboration</h3>
+      <p class="feature__description">
+        Assign sections, track progress, and maintain version control across your deal team.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="trust">
+  <div class="trust__content">
+    <h2 class="trust__title">Backed by real deal experience</h2>
+    <p class="trust__description">
+      Dill is built by <a href="https://svsg.co" target="_blank">Silicon Valley Software Group</a>, a technology consulting firm that's supported due diligence on 100+ transactions. We've been in the data room. We know what associates need.
+    </p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta__content">
+    <h2 class="cta__title">Ready to move faster on your next deal?</h2>
+    <p class="cta__subtitle">Start your diligence today. No credit card required.</p>
+    <%= link_to "Get Started Free", new_session_path, class: "btn btn--reversed btn--large" %>
+  </div>
+</section>
