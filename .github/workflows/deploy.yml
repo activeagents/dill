@@ -8,10 +8,17 @@ on:
     types: [labeled, opened, synchronize, reopened]
 
 env:
-  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  GCP_PROJECT_ID: dill-vc
   GCP_REGION: us-central1
   SERVICE_NAME: dill
-  ARTIFACT_REGISTRY: ${{ secrets.GCP_PROJECT_ID }}/dill
+  ARTIFACT_REGISTRY: dill-vc/dill
+  WORKLOAD_IDENTITY_PROVIDER: projects/48483662515/locations/global/workloadIdentityPools/github-actions/providers/github
+  SERVICE_ACCOUNT: github-actions@dill-vc.iam.gserviceaccount.com
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
 
 jobs:
   # Deploy to staging on PR
@@ -31,7 +38,8 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
@@ -89,7 +97,8 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: ${{ env.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ env.SERVICE_ACCOUNT }}
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
