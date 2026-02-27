@@ -34,17 +34,27 @@ module Suggestable
     return false unless suggestion.pending?
     return false unless suggestion.suggestable == self
 
-    case suggestion.suggestion_type
-    when "edit"
-      return false unless apply_edit(suggestion)
-    when "delete"
-      return false unless apply_delete(suggestion)
-    when "add"
-      return false unless apply_add(suggestion)
+    transaction do
+      applied = case suggestion.suggestion_type
+      when "edit"
+        apply_edit(suggestion)
+      when "delete"
+        apply_delete(suggestion)
+      when "add"
+        apply_add(suggestion)
+      when "comment"
+        true # Comments don't modify content, just mark as accepted
+      else
+        false
+      end
+
+      return false unless applied
+      suggestion.accept!
     end
 
-    suggestion.accept!
     true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
   end
 
   private
@@ -52,26 +62,30 @@ module Suggestable
   def apply_edit(suggestion)
     return false if suggestion.original_text.blank? || suggestion.suggested_text.blank?
 
-    content = suggestable_content
-    return false unless content&.include?(suggestion.original_text)
-
-    update_suggestable_content(content.sub(suggestion.original_text, suggestion.suggested_text))
+    with_lock do
+      content = suggestable_content
+      return false unless content&.include?(suggestion.original_text)
+      update_suggestable_content(content.sub(suggestion.original_text, suggestion.suggested_text))
+    end
   end
 
   def apply_delete(suggestion)
     return false if suggestion.original_text.blank?
 
-    content = suggestable_content
-    return false unless content&.include?(suggestion.original_text)
-
-    update_suggestable_content(content.sub(suggestion.original_text, ""))
+    with_lock do
+      content = suggestable_content
+      return false unless content&.include?(suggestion.original_text)
+      update_suggestable_content(content.sub(suggestion.original_text, ""))
+    end
   end
 
   def apply_add(suggestion)
     return false if suggestion.suggested_text.blank?
 
-    content = suggestable_content || ""
-    update_suggestable_content(content + "\n\n" + suggestion.suggested_text)
+    with_lock do
+      content = suggestable_content || ""
+      update_suggestable_content(content + "\n\n" + suggestion.suggested_text)
+    end
   end
 
   # Override in including classes for model-specific content access
