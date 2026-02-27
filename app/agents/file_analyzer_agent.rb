@@ -175,10 +175,13 @@ class FileAnalyzerAgent < ApplicationAgent
     nil
   end
 
-  # Clean up temp files created by the controller for file uploads
+  # Clean up temp files created by the controller for file uploads.
+  # Safe to call in ensure blocks: generate_later runs the entire action
+  # inside the background job, so ensure fires after the LLM call completes.
   def cleanup_temp_file
     return unless @file_path
-    return unless @file_path.to_s.include?("/tmp/upload_")
+    tmp_prefix = File.join("tmp", "upload_")
+    return unless @file_path.to_s.include?(tmp_prefix)
     return unless File.exist?(@file_path)
 
     File.delete(@file_path)
