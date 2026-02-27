@@ -303,6 +303,6 @@ class AssistantsController < ApplicationController
 
   def authorize_page_access!
     page = Page.find_by(id: params[:page_id])
-    head :forbidden unless page&.report&.accessable?
+    head :forbidden unless page&.report&.editable?
   end
 end

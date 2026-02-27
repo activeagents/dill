@@ -146,6 +146,42 @@ class AssistantsControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
   end
 
+  test "stream endpoint with page_id requires editor access" do
+    page = pages(:welcome)
+    # kevin has editor access to handbook - should succeed
+    post assistants_stream_url, params: {
+      action_type: "improve",
+      content: "Test",
+      page_id: page.id
+    }, as: :json
+
+    assert_response :success
+  end
+
+  test "stream endpoint with page_id forbids reader access" do
+    sign_in :jz  # jz has only reader access to handbook
+
+    page = pages(:welcome)
+    post assistants_stream_url, params: {
+      action_type: "improve",
+      content: "Test",
+      page_id: page.id
+    }, as: :json
+
+    assert_response :forbidden
+  end
+
+  test "stream endpoint without page_id skips page authorization" do
+    sign_in :jz  # jz is a reader, but no page_id means no page auth check
+
+    post assistants_stream_url, params: {
+      action_type: "improve",
+      content: "Test"
+    }, as: :json
+
+    assert_response :success
+  end
+
   # ============================================
   # Image caption endpoint tests
   # ============================================
