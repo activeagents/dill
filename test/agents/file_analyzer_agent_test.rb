@@ -120,11 +120,33 @@ class FileAnalyzerAgentTest < ActiveSupport::TestCase
     assert_equal "Unable to read file content", content
   end
 
-  test "encode_image returns nil for non-existent file" do
+  test "encode_image_to_base64 returns nil for non-existent file" do
     agent = FileAnalyzerAgent.new
-    result = agent.send(:encode_image, '/nonexistent/image.jpg')
+    result = agent.send(:encode_image_to_base64, '/nonexistent/image.jpg')
 
     assert_nil result
+  end
+
+  test "cleanup_temp_file deletes upload temp files" do
+    temp_file = Rails.root.join("tmp", "upload_abc123_test.jpg")
+    File.write(temp_file, "fake image")
+
+    agent = FileAnalyzerAgent.new
+    agent.instance_variable_set(:@file_path, temp_file.to_s)
+    agent.send(:cleanup_temp_file)
+
+    assert_not File.exist?(temp_file)
+  end
+
+  test "cleanup_temp_file does not delete non-upload files" do
+    temp_file = @temp_dir.join("important.txt")
+    File.write(temp_file, "keep me")
+
+    agent = FileAnalyzerAgent.new
+    agent.instance_variable_set(:@file_path, temp_file.to_s)
+    agent.send(:cleanup_temp_file)
+
+    assert File.exist?(temp_file)
   end
 
   test "broadcast_chunk does nothing without stream_id" do
