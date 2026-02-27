@@ -1,5 +1,6 @@
 class SuggestionsController < ApplicationController
   before_action :set_suggestion
+  before_action :authorize_suggestion!
 
   def accept
     @suggestion.accept!(Current.user)
@@ -23,5 +24,10 @@ class SuggestionsController < ApplicationController
 
   def set_suggestion
     @suggestion = Suggestion.find(params[:id])
+  end
+
+  def authorize_suggestion!
+    report = @suggestion.suggestable&.report
+    head :forbidden unless report&.editable?
   end
 end
