@@ -133,6 +133,8 @@ GEM
     bcrypt (3.1.20)
     bigdecimal (3.3.1)
     bindex (0.8.1)
+    bootsnap (1.23.0)
+      msgpack (~> 1.2)
     brakeman (7.1.0)
       racc
     builder (3.3.0)
@@ -256,6 +258,7 @@ GEM
       railties (>= 7.1)
       stimulus-rails
       turbo-rails
+    msgpack (1.8.0)
     multi_xml (0.8.1)
       bigdecimal (>= 3.1, < 5)
     multipart-post (2.4.1)
@@ -501,6 +504,7 @@ PLATFORMS
 DEPENDENCIES
   activeagent (~> 1.0.1)
   bcrypt (~> 3.1.7)
+  bootsnap
   brakeman
   capybara
   capybara-playwright-driver
