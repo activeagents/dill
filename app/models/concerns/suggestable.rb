@@ -31,12 +31,55 @@ module Suggestable
   end
 
   def apply_suggestion(suggestion)
-    return false unless suggestion.pending? && suggestion.edit?
+    return false unless suggestion.pending?
     return false unless suggestion.suggestable == self
 
-    # This is a placeholder - actual implementation depends on the content model
-    # Override in including class for specific behavior
+    case suggestion.suggestion_type
+    when "edit"
+      return false unless apply_edit(suggestion)
+    when "delete"
+      return false unless apply_delete(suggestion)
+    when "add"
+      return false unless apply_add(suggestion)
+    end
+
     suggestion.accept!
     true
+  end
+
+  private
+
+  def apply_edit(suggestion)
+    return false if suggestion.original_text.blank? || suggestion.suggested_text.blank?
+
+    content = suggestable_content
+    return false unless content&.include?(suggestion.original_text)
+
+    update_suggestable_content(content.sub(suggestion.original_text, suggestion.suggested_text))
+  end
+
+  def apply_delete(suggestion)
+    return false if suggestion.original_text.blank?
+
+    content = suggestable_content
+    return false unless content&.include?(suggestion.original_text)
+
+    update_suggestable_content(content.sub(suggestion.original_text, ""))
+  end
+
+  def apply_add(suggestion)
+    return false if suggestion.suggested_text.blank?
+
+    content = suggestable_content || ""
+    update_suggestable_content(content + "\n\n" + suggestion.suggested_text)
+  end
+
+  # Override in including classes for model-specific content access
+  def suggestable_content
+    nil
+  end
+
+  def update_suggestable_content(_new_content)
+    false
   end
 end

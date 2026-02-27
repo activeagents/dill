@@ -59,4 +59,12 @@ class Finding < ApplicationRecord
   def resolved?
     status.in?(%w[resolved wont_fix])
   end
+
+  def suggestable_content
+    description
+  end
+
+  def update_suggestable_content(new_content)
+    update!(description: new_content)
+  end
 end

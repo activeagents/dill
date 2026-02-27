@@ -18,6 +18,15 @@ class Page < ApplicationRecord
     rendered_html(markdown_source.first(1024))
   end
 
+  def suggestable_content
+    body.content.to_s
+  end
+
+  def update_suggestable_content(new_content)
+    self.body = new_content
+    save!
+  end
+
   private
     def plain_text
       html_body = rendered_html(markdown_source)
