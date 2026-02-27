@@ -11,6 +11,7 @@ gem "connection_pool", "~> 2.5"  # Pin to 2.x for Rails edge compatibility
 
 # Deployment
 gem "puma", ">= 5.0"
+gem "bootsnap", require: false
 
 # Jobs
 gem "solid_queue"
