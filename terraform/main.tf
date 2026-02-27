@@ -202,6 +202,7 @@ resource "google_cloud_run_v2_service" "app" {
         failure_threshold     = 18
         http_get {
           path = "/up"
+          port = 8080
         }
       }
 
@@ -209,6 +210,7 @@ resource "google_cloud_run_v2_service" "app" {
       liveness_probe {
         http_get {
           path = "/up"
+          port = 8080
         }
       }
     }

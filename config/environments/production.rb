@@ -65,6 +65,7 @@ Rails.application.configure do
   # SQLite is good, actually
   # config.active_record.sqlite3_production_warning = false
 
-  config.active_job.queue_adapter = :solid_queue
-  config.solid_queue.connects_to = { database: { writing: :queue } }
+  # Use async queue adapter in production for now to avoid SQLite locking issues
+  # TODO: Re-enable SolidQueue when using Cloud SQL
+  config.active_job.queue_adapter = :async
 end
