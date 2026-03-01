@@ -1,150 +1,367 @@
-<% content_for(:title) { "Dill - AI-Powered Due Diligence Reports" } %>
+<% content_for(:title) { "DILL BABY DILL - AI-Powered Due Diligence" } %>
 
-<section class="hero">
-  <div class="hero__content">
-    <h1 class="hero__title">
-      Don't get in a pickle,<br>
-      <span class="hero__highlight">do dill.</span>
+<style>
+  .rally-hero {
+    background: linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #1a365d 100%);
+    padding: 80px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rally-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+      radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255,255,255,0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .rally-hero__content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .rally-hero__tagline {
+    font-size: 72px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 20px;
+    text-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+  }
+
+  .rally-hero__tagline span {
+    display: block;
+    background: linear-gradient(180deg, #f6e05e 0%, #ecc94b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .rally-hero__subtitle {
+    font-size: 24px;
+    color: #bee3f8;
+    margin-bottom: 30px;
+    font-weight: 500;
+  }
+
+  .rally-hero__description {
+    font-size: 20px;
+    color: #e2e8f0;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.6;
+  }
+
+  .rally-hero__cta {
+    display: inline-block;
+    background: linear-gradient(180deg, #48bb78 0%, #38a169 100%);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 20px 50px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 20px rgba(72, 187, 120, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .rally-hero__cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(72, 187, 120, 0.5);
+  }
+
+  .rally-stats {
+    background: #fff;
+    padding: 60px 40px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    flex-wrap: wrap;
+  }
+
+  .rally-stat {
+    text-align: center;
+  }
+
+  .rally-stat__number {
+    font-size: 64px;
+    font-weight: 900;
+    color: #2c5282;
+    line-height: 1;
+  }
+
+  .rally-stat__label {
+    font-size: 18px;
+    color: #4a5568;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 10px;
+  }
+
+  .rally-message {
+    background: #f7fafc;
+    padding: 80px 40px;
+    text-align: center;
+  }
+
+  .rally-message__content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .rally-message__title {
+    font-size: 48px;
+    font-weight: 800;
+    color: #1a365d;
+    margin-bottom: 30px;
+    line-height: 1.2;
+  }
+
+  .rally-message__text {
+    font-size: 22px;
+    color: #4a5568;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .rally-message__emphasis {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c5282;
+    margin-top: 30px;
+  }
+
+  .rally-features {
+    background: #1a365d;
+    padding: 80px 40px;
+  }
+
+  .rally-features__header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .rally-features__title {
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    text-transform: uppercase;
+  }
+
+  .rally-features__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .rally-feature {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+  }
+
+  .rally-feature__icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+  }
+
+  .rally-feature__title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #f6e05e;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .rally-feature__description {
+    font-size: 16px;
+    color: #e2e8f0;
+    line-height: 1.6;
+  }
+
+  .rally-cta {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+    padding: 80px 40px;
+    text-align: center;
+  }
+
+  .rally-cta__title {
+    font-size: 48px;
+    font-weight: 900;
+    color: #fff;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+  }
+
+  .rally-cta__subtitle {
+    font-size: 24px;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 40px;
+  }
+
+  .rally-cta__button {
+    display: inline-block;
+    background: #fff;
+    color: #276749;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 20px 60px;
+    border-radius: 8px;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: transform 0.2s;
+  }
+
+  .rally-cta__button:hover {
+    transform: scale(1.05);
+  }
+
+  .pickle-emoji {
+    display: inline-block;
+    animation: bounce 0.5s ease-in-out infinite alternate;
+  }
+
+  @keyframes bounce {
+    from { transform: translateY(0); }
+    to { transform: translateY(-5px); }
+  }
+
+  @media (max-width: 768px) {
+    .rally-hero__tagline {
+      font-size: 48px;
+    }
+    .rally-stat__number {
+      font-size: 48px;
+    }
+    .rally-stats {
+      gap: 40px;
+    }
+    .rally-message__title {
+      font-size: 32px;
+    }
+  }
+</style>
+
+<section class="rally-hero">
+  <div class="rally-hero__content">
+    <h1 class="rally-hero__tagline">
+      <span class="pickle-emoji">🥒</span>
+      <span>DILL BABY DILL!</span>
     </h1>
-    <p class="hero__subtitle">
-      Due Diligence — from the team at <a href="https://svsg.co" target="_blank" class="hero__link">SVSG</a>
+    <p class="rally-hero__subtitle">
+      Due Diligence That Gets It Done
     </p>
-    <p class="hero__value-prop">
-      Get IC-ready memos faster. AI-powered analysis backed by seasoned consultants who've done 100+ deals.
+    <p class="rally-hero__description">
+      Stop wasting weeks on manual research. Our AI-powered platform turns data rooms into investment memos faster than you can say "term sheet."
     </p>
-    <div class="hero__actions">
-      <%= link_to "Get Started", new_session_path, class: "btn btn--reversed btn--large" %>
-      <a href="#how-it-works" class="btn btn--large">See How It Works</a>
-    </div>
-  </div>
-  <div class="hero__visual">
-    <div class="hero__mockup">
-      <div class="mockup-window">
-        <div class="mockup-header">
-          <span class="mockup-dot"></span>
-          <span class="mockup-dot"></span>
-          <span class="mockup-dot"></span>
-        </div>
-        <div class="mockup-content">
-          <div class="mockup-sidebar">
-            <div class="mockup-item"></div>
-            <div class="mockup-item mockup-item--active"></div>
-            <div class="mockup-item"></div>
-          </div>
-          <div class="mockup-main">
-            <div class="mockup-title"></div>
-            <div class="mockup-text"></div>
-            <div class="mockup-text mockup-text--short"></div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <%= link_to "Start Dilling Now", new_session_path, class: "rally-hero__cta" %>
   </div>
 </section>
 
-<section id="how-it-works" class="how-it-works">
-  <div class="how-it-works__header">
-    <h2 class="how-it-works__title">From data room to IC memo</h2>
-    <p class="how-it-works__subtitle">Stop drowning in documents. Start delivering insights.</p>
+<section class="rally-stats">
+  <div class="rally-stat">
+    <div class="rally-stat__number">10x</div>
+    <div class="rally-stat__label">Faster Analysis</div>
   </div>
-
-  <div class="how-it-works__steps">
-    <div class="step">
-      <div class="step__number">1</div>
-      <h3 class="step__title">Upload Your Documents</h3>
-      <p class="step__description">
-        Drop in financials, pitch decks, contracts, and data room exports. We handle the extraction.
-      </p>
-    </div>
-
-    <div class="step">
-      <div class="step__number">2</div>
-      <h3 class="step__title">AI Surfaces What Matters</h3>
-      <p class="step__description">
-        Our AI flags risks, inconsistencies, and key metrics — so you focus on analysis, not admin.
-      </p>
-    </div>
-
-    <div class="step">
-      <div class="step__number">3</div>
-      <h3 class="step__title">Draft Your Memo</h3>
-      <p class="step__description">
-        Generate structured reports with AI assistance. Every claim linked to its source. Ready for partner review.
-      </p>
-    </div>
+  <div class="rally-stat">
+    <div class="rally-stat__number">100+</div>
+    <div class="rally-stat__label">Deals Supported</div>
+  </div>
+  <div class="rally-stat">
+    <div class="rally-stat__number">0</div>
+    <div class="rally-stat__label">Pickles</div>
   </div>
 </section>
 
-<section id="features" class="features">
-  <div class="features__header">
-    <h2 class="features__title">Built for deal teams under pressure</h2>
-    <p class="features__subtitle">The tools you need to move fast without cutting corners.</p>
-  </div>
-
-  <div class="features__grid">
-    <div class="feature">
-      <div class="feature__icon">📄</div>
-      <h3 class="feature__title">Smart Document Analysis</h3>
-      <p class="feature__description">
-        Upload financial statements, pitch decks, and contracts. Our AI extracts key insights and flags potential concerns automatically.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="feature__icon">🤖</div>
-      <h3 class="feature__title">AI-Assisted Drafting</h3>
-      <p class="feature__description">
-        Generate first drafts of report sections. You review, edit, and own the final work — AI handles the heavy lifting.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="feature__icon">📊</div>
-      <h3 class="feature__title">IC-Ready Reports</h3>
-      <p class="feature__description">
-        Structured chapters, executive summaries, and findings organized the way your committee expects them.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="feature__icon">🔗</div>
-      <h3 class="feature__title">Defensible Sources</h3>
-      <p class="feature__description">
-        Every claim traced back to source documents. When partners ask "where did this come from?" — you'll know.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="feature__icon">🔒</div>
-      <h3 class="feature__title">Deal-Grade Security</h3>
-      <p class="feature__description">
-        Your data stays yours. Enterprise security, SOC 2 compliance, and strict access controls for sensitive deal materials.
-      </p>
-    </div>
-
-    <div class="feature">
-      <div class="feature__icon">👥</div>
-      <h3 class="feature__title">Team Collaboration</h3>
-      <p class="feature__description">
-        Assign sections, track progress, and maintain version control across your deal team.
-      </p>
-    </div>
-  </div>
-</section>
-
-<section class="trust">
-  <div class="trust__content">
-    <h2 class="trust__title">Backed by real deal experience</h2>
-    <p class="trust__description">
-      Dill is built by <a href="https://svsg.co" target="_blank">Silicon Valley Software Group</a>, a technology consulting firm that's supported due diligence on 100+ transactions. We've been in the data room. We know what associates need.
+<section class="rally-message">
+  <div class="rally-message__content">
+    <h2 class="rally-message__title">
+      They Said DD Had To Be Slow.<br>
+      We Said: Wrong!
+    </h2>
+    <p class="rally-message__text">
+      While other firms are still printing PDFs and highlighting with yellow markers, you'll be delivering IC-ready memos that actually impress.
+    </p>
+    <p class="rally-message__text">
+      Upload your docs. Let AI do the grunt work. You focus on the insights that matter.
+    </p>
+    <p class="rally-message__emphasis">
+      It's time to DILL! <span class="pickle-emoji">🥒</span>
     </p>
   </div>
 </section>
 
-<section class="cta">
-  <div class="cta__content">
-    <h2 class="cta__title">Ready to move faster on your next deal?</h2>
-    <p class="cta__subtitle">Start your diligence today. No credit card required.</p>
-    <%= link_to "Get Started Free", new_session_path, class: "btn btn--reversed btn--large" %>
+<section class="rally-features">
+  <div class="rally-features__header">
+    <h2 class="rally-features__title">Everything You Need To Win</h2>
   </div>
+  <div class="rally-features__grid">
+    <div class="rally-feature">
+      <div class="rally-feature__icon">📄</div>
+      <div class="rally-feature__title">Document Domination</div>
+      <p class="rally-feature__description">
+        Upload hundreds of files. We extract the signal from the noise. No more drowning in data rooms.
+      </p>
+    </div>
+    <div class="rally-feature">
+      <div class="rally-feature__icon">🤖</div>
+      <div class="rally-feature__title">AI That Works</div>
+      <p class="rally-feature__description">
+        Not just another chatbot. Purpose-built analysis that understands financials, contracts, and deal dynamics.
+      </p>
+    </div>
+    <div class="rally-feature">
+      <div class="rally-feature__icon">📊</div>
+      <div class="rally-feature__title">Reports That Impress</div>
+      <p class="rally-feature__description">
+        Professional, structured memos your IC will actually want to read. Every claim sourced and verified.
+      </p>
+    </div>
+    <div class="rally-feature">
+      <div class="rally-feature__icon">⚡</div>
+      <div class="rally-feature__title">Speed Wins Deals</div>
+      <p class="rally-feature__description">
+        Move faster than the competition. When time is money, Dill pays for itself on day one.
+      </p>
+    </div>
+    <div class="rally-feature">
+      <div class="rally-feature__icon">🔒</div>
+      <div class="rally-feature__title">Locked Down Tight</div>
+      <p class="rally-feature__description">
+        Enterprise security for enterprise deals. Your data stays yours. Period.
+      </p>
+    </div>
+    <div class="rally-feature">
+      <div class="rally-feature__icon">👥</div>
+      <div class="rally-feature__title">Team Ready</div>
+      <p class="rally-feature__description">
+        Collaborate across your deal team. Everyone on the same page, moving in the same direction.
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="rally-cta">
+  <h2 class="rally-cta__title">Ready To Dill? <span class="pickle-emoji">🥒</span></h2>
+  <p class="rally-cta__subtitle">Join the firms that are already winning with AI-powered DD</p>
+  <%= link_to "Get Started Free", new_session_path, class: "rally-cta__button" %>
 </section>
