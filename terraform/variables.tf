@@ -33,18 +33,6 @@ variable "oauth_support_email" {
   type        = string
 }
 
-variable "allowed_domains" {
-  description = "Comma-separated list of allowed email domains for SSO (e.g., 'dill.vc,svsg.co')"
-  type        = string
-  default     = ""
-}
-
-variable "auto_provision_users" {
-  description = "Whether to auto-create users from allowed domains on first login"
-  type        = bool
-  default     = false
-}
-
 # Porkbun DNS Configuration
 variable "porkbun_api_key" {
   description = "Porkbun API key for DNS management"

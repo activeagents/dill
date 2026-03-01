@@ -184,16 +184,6 @@ resource "google_cloud_run_v2_service" "app" {
         }
       }
 
-      env {
-        name  = "ALLOWED_DOMAINS"
-        value = var.allowed_domains
-      }
-
-      env {
-        name  = "AUTO_PROVISION_USERS"
-        value = var.auto_provision_users ? "true" : "false"
-      }
-
       # Startup probe — Rails needs time to boot (thruster serves loading page meanwhile)
       startup_probe {
         initial_delay_seconds = 10

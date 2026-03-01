@@ -8,8 +8,7 @@ if defined?(OmniAuth)
       ENV["GOOGLE_CLIENT_SECRET"],
       {
         scope: "email,profile",
-        prompt: "select_account",
-        hd: ENV.fetch("ALLOWED_DOMAINS", "").split(",").first.presence
+        prompt: "select_account"
       }
   end
 
