@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   # Landing page
   root "static_pages#home"
   get "b", to: "static_pages#home_b", as: :home_b
+  get "c", to: "static_pages#home_c", as: :home_c
 
   # App routes
   get "reports", to: "reports#index", as: :reports

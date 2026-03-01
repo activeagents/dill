@@ -7,4 +7,8 @@ class StaticPagesController < ApplicationController
 
   def home_b
   end
+
+  def home_c
+    render layout: "retro"
+  end
 end
