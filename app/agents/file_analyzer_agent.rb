@@ -19,17 +19,22 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_pdf_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file(@file_path)
   end
 
   def analyze_image
     Rails.logger.info "[FileAnalyzer] analyze_image called with params: #{params.inspect}"
 
+    @file_path = params[:file_path]
     @description_detail = params[:description_detail] || "medium"
 
-    # Encode image before calling prompt so it can be passed as an option
-    encode_image_from_attachment
+    # Smart dispatch: try file path first (controller uploads), then attachment slug (Active Storage)
+    encode_image
 
     setup_context_and_prompt_with_image
+  ensure
+    cleanup_temp_file(@file_path)
   end
 
   # Extract all text content from an image (OCR-style extraction)
@@ -37,12 +42,15 @@ class FileAnalyzerAgent < ApplicationAgent
   def extract_image_text
     Rails.logger.info "[FileAnalyzer] extract_image_text called with params: #{params.inspect}"
 
+    @file_path = params[:file_path]
     @extraction_focus = params[:extraction_focus] || "all"
 
-    # Encode image before calling prompt
-    encode_image_from_attachment
+    # Smart dispatch: try file path first (controller uploads), then attachment slug (Active Storage)
+    encode_image
 
     setup_context_and_prompt_with_image
+  ensure
+    cleanup_temp_file(@file_path)
   end
 
   def extract_text
@@ -50,6 +58,8 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_file_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file(@file_path)
   end
 
   def summarize_document
@@ -57,6 +67,8 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_file_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file(@file_path)
   end
 
   private
@@ -147,12 +159,43 @@ class FileAnalyzerAgent < ApplicationAgent
     @image_data = "data:#{content_type};base64,#{Base64.strict_encode64(File.binread(@file_path))}"
   end
 
+  # Smart image encoding dispatch: tries file path first (for controller uploads),
+  # then falls back to Active Storage attachment slug
+  def encode_image
+    if @file_path && File.exist?(@file_path)
+      encode_image_for_prompt
+    else
+      encode_image_from_attachment
+    end
+  end
+
   # Encode a file at the given path to base64
-  def encode_image(path)
+  def encode_image_to_base64(path)
     return nil unless path && File.exist?(path)
     Base64.strict_encode64(File.binread(path))
   rescue
     nil
+  end
+
+  # Cleans up controller-created temp files (upload_* pattern) after agent processing.
+  # NOTE: ensure blocks run within the background job (after generate_later enqueues
+  # and the job executes), so cleanup happens after the agent has finished using the file.
+  def cleanup_temp_file(file_path)
+    return unless file_path
+
+    tmp_dir = File.join(Rails.root, "tmp")
+    basename = File.basename(file_path)
+
+    # Only clean up files in tmp/ that match the upload_* naming convention
+    # used by AssistantsController to avoid deleting unrelated files
+    return unless basename.start_with?("upload_")
+    return unless File.dirname(File.expand_path(file_path)) == File.expand_path(tmp_dir)
+    return unless File.exist?(file_path)
+
+    File.delete(file_path)
+    Rails.logger.info "[FileAnalyzer] Cleaned up temp file: #{basename}"
+  rescue => e
+    Rails.logger.warn "[FileAnalyzer] Failed to clean up temp file #{file_path}: #{e.message}"
   end
 
   # Detect content type from file magic bytes
