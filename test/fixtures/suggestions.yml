@@ -1,0 +1,26 @@
+edit_suggestion:
+  suggestable: welcome (Page)
+  suggestable_type: Page
+  suggestion_type: edit
+  status: pending
+  original_text: "Welcome to the handbook"
+  suggested_text: "Welcome to our comprehensive handbook"
+  ai_generated: true
+  reasoning: "More descriptive title"
+
+comment_suggestion:
+  suggestable: welcome (Page)
+  suggestable_type: Page
+  suggestion_type: comment
+  status: pending
+  comment: "Consider expanding this section"
+  ai_generated: true
+
+accepted_suggestion:
+  suggestable: summary (Page)
+  suggestable_type: Page
+  suggestion_type: edit
+  status: accepted
+  original_text: "old text"
+  suggested_text: "new text"
+  ai_generated: true

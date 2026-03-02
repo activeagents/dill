@@ -19,11 +19,14 @@ class Suggestion < ApplicationRecord
   before_save :compute_content_hash, if: -> { start_offset.present? && end_offset.present? }
 
   def accept!(user = nil)
-    update!(
-      status: "accepted",
-      resolved_by: user,
-      resolved_at: Time.current
-    )
+    transaction do
+      apply_content_to_suggestable! if edit?
+      update!(
+        status: "accepted",
+        resolved_by: user,
+        resolved_at: Time.current
+      )
+    end
   end
 
   def reject!(user = nil)
@@ -89,6 +92,12 @@ class Suggestion < ApplicationRecord
   end
 
   private
+
+  def apply_content_to_suggestable!
+    return unless original_text.present? && suggested_text.present?
+
+    suggestable.apply_accepted_suggestion(self)
+  end
 
   def compute_content_hash
     # Create a hash based on position and surrounding context

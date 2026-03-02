@@ -34,9 +34,13 @@ module Suggestable
     return false unless suggestion.pending? && suggestion.edit?
     return false unless suggestion.suggestable == self
 
-    # This is a placeholder - actual implementation depends on the content model
-    # Override in including class for specific behavior
     suggestion.accept!
     true
+  end
+
+  # Override in including class to apply accepted edit suggestions to content.
+  # Called by Suggestion#accept! for edit-type suggestions.
+  def apply_accepted_suggestion(suggestion)
+    # no-op by default
   end
 end
