@@ -31,12 +31,69 @@ module Suggestable
   end
 
   def apply_suggestion(suggestion)
-    return false unless suggestion.pending? && suggestion.edit?
+    return false unless suggestion.pending?
     return false unless suggestion.suggestable == self
 
-    # This is a placeholder - actual implementation depends on the content model
-    # Override in including class for specific behavior
-    suggestion.accept!
+    transaction do
+      applied = case suggestion.suggestion_type
+      when "edit"
+        apply_edit(suggestion)
+      when "delete"
+        apply_delete(suggestion)
+      when "add"
+        apply_add(suggestion)
+      when "comment"
+        true # Comments don't modify content, just mark as accepted
+      else
+        false
+      end
+
+      return false unless applied
+      suggestion.accept!
+    end
+
     true
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotSaved
+    false
+  end
+
+  private
+
+  def apply_edit(suggestion)
+    return false if suggestion.original_text.blank? || suggestion.suggested_text.blank?
+
+    with_lock do
+      content = suggestable_content
+      return false unless content&.include?(suggestion.original_text)
+      update_suggestable_content(content.sub(suggestion.original_text, suggestion.suggested_text))
+    end
+  end
+
+  def apply_delete(suggestion)
+    return false if suggestion.original_text.blank?
+
+    with_lock do
+      content = suggestable_content
+      return false unless content&.include?(suggestion.original_text)
+      update_suggestable_content(content.sub(suggestion.original_text, ""))
+    end
+  end
+
+  def apply_add(suggestion)
+    return false if suggestion.suggested_text.blank?
+
+    with_lock do
+      content = suggestable_content || ""
+      update_suggestable_content(content + "\n\n" + suggestion.suggested_text)
+    end
+  end
+
+  # Override in including classes for model-specific content access
+  def suggestable_content
+    nil
+  end
+
+  def update_suggestable_content(_new_content)
+    false
   end
 end
