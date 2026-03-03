@@ -19,17 +19,20 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_pdf_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file
   end
 
   def analyze_image
     Rails.logger.info "[FileAnalyzer] analyze_image called with params: #{params.inspect}"
 
+    @file_path = params[:file_path]
     @description_detail = params[:description_detail] || "medium"
 
-    # Encode image before calling prompt so it can be passed as an option
-    encode_image_from_attachment
-
+    encode_image
     setup_context_and_prompt_with_image
+  ensure
+    cleanup_temp_file
   end
 
   # Extract all text content from an image (OCR-style extraction)
@@ -37,12 +40,13 @@ class FileAnalyzerAgent < ApplicationAgent
   def extract_image_text
     Rails.logger.info "[FileAnalyzer] extract_image_text called with params: #{params.inspect}"
 
+    @file_path = params[:file_path]
     @extraction_focus = params[:extraction_focus] || "all"
 
-    # Encode image before calling prompt
-    encode_image_from_attachment
-
+    encode_image
     setup_context_and_prompt_with_image
+  ensure
+    cleanup_temp_file
   end
 
   def extract_text
@@ -50,6 +54,8 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_file_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file
   end
 
   def summarize_document
@@ -57,6 +63,8 @@ class FileAnalyzerAgent < ApplicationAgent
     @content = extract_file_content(@file_path) if @file_path
 
     setup_context_and_prompt
+  ensure
+    cleanup_temp_file
   end
 
   private
@@ -139,6 +147,18 @@ class FileAnalyzerAgent < ApplicationAgent
     Rails.logger.error "[FileAnalyzer] Backtrace: #{e.backtrace.first(5).join("\n")}"
   end
 
+  # Encode image using whichever source is available:
+  # file_path (from controller upload) or attachment_slug (from Active Storage)
+  def encode_image
+    if @file_path.present?
+      encode_image_for_prompt
+    elsif params[:attachment_slug].present?
+      encode_image_from_attachment
+    else
+      Rails.logger.warn "[FileAnalyzer] No file_path or attachment_slug provided for image encoding"
+    end
+  end
+
   # Encode image from a file path (for standalone file uploads via controller)
   def encode_image_for_prompt
     return unless @file_path && File.exist?(@file_path)
@@ -148,11 +168,26 @@ class FileAnalyzerAgent < ApplicationAgent
   end
 
   # Encode a file at the given path to base64
-  def encode_image(path)
+  def encode_image_to_base64(path)
     return nil unless path && File.exist?(path)
     Base64.strict_encode64(File.binread(path))
   rescue
     nil
+  end
+
+  # Clean up temp files created by the controller for file uploads.
+  # Safe to call in ensure blocks: generate_later runs the entire action
+  # inside the background job, so ensure fires after the LLM call completes.
+  def cleanup_temp_file
+    return unless @file_path
+    tmp_prefix = File.join("tmp", "upload_")
+    return unless @file_path.to_s.include?(tmp_prefix)
+    return unless File.exist?(@file_path)
+
+    File.delete(@file_path)
+    Rails.logger.info "[FileAnalyzer] Cleaned up temp file: #{@file_path}"
+  rescue => e
+    Rails.logger.warn "[FileAnalyzer] Failed to clean up temp file #{@file_path}: #{e.message}"
   end
 
   # Detect content type from file magic bytes
