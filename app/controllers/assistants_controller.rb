@@ -1,5 +1,5 @@
 class AssistantsController < ApplicationController
-  # Authentication is handled by ApplicationController via require_authentication
+  before_action :authorize_page_access!, if: -> { params[:page_id].present? }
 
   def writing_improve
     stream_id = "writing_assistant_#{SecureRandom.hex(8)}"
@@ -297,5 +297,12 @@ class AssistantsController < ApplicationController
     Rails.logger.error "[Streaming] Error: #{e.message}"
     Rails.logger.error e.backtrace.join("\n")
     render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  private
+
+  def authorize_page_access!
+    page = Page.find_by(id: params[:page_id])
+    head :forbidden unless page&.report&.editable?
   end
 end
