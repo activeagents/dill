@@ -13,6 +13,22 @@
     <%= image_tag "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg", size: 24, alt: "Google logo" %>
     <span>Sign in with Google</span>
   <% end %>
+
+  <% if Rails.env.development? %>
+    <hr class="margin-block">
+    <p class="txt-subtle margin-block-end">Or sign in with email</p>
+    <%= form_with url: session_path, class: "form" do |f| %>
+      <div class="margin-block-end">
+        <%= f.label :email_address, "Email" %>
+        <%= f.email_field :email_address, autofocus: true, required: true, class: "input" %>
+      </div>
+      <div class="margin-block-end">
+        <%= f.label :password %>
+        <%= f.password_field :password, required: true, class: "input" %>
+      </div>
+      <%= f.submit "Sign in", class: "btn" %>
+    <% end %>
+  <% end %>
 </div>
 
 <% content_for(:footer) do %>
