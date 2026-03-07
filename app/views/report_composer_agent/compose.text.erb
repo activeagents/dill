@@ -1,0 +1,34 @@
+You are composing a <%= @section_type %> section for a due diligence report.
+
+TOPIC: <%= @topic %>
+
+<% if @document_contexts.present? && @document_contexts.any? %>
+AVAILABLE SOURCE DOCUMENTS:
+<% @document_contexts.each do |ctx| %>
+---
+Document: <%= ctx[:name] %> (<%= ctx[:page_count] %> pages)
+<% if ctx[:relevant_pages].any? %>
+Relevant pages found: <%= ctx[:relevant_pages].map { |p| p[:page] }.join(", ") %>
+<% ctx[:relevant_pages].first(5).each do |page_info| %>
+
+Page <%= page_info[:page] %> (relevance score: <%= page_info[:score] %>):
+<%= page_info[:excerpt] %>
+<% end %>
+<% else %>
+No specific pages matched the topic query.
+<% end %>
+<% end %>
+---
+<% else %>
+No source documents available. Please add documents to the report first.
+<% end %>
+
+INSTRUCTIONS:
+1. Write a comprehensive <%= @section_type %> section about "<%= @topic %>"
+2. Use ONLY information from the source documents provided above
+3. Cite every factual claim with: [Source: document_name, Page X]
+4. Structure with clear headings (##) and bullet points where appropriate
+5. Note any gaps or areas where the documents lack sufficient information
+6. Be objective, precise, and thorough
+
+Begin your section:

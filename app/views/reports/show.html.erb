@@ -98,6 +98,7 @@
           <%= image_tag "document-icon.svg", aria: { hidden: true }, size: 24 %>
           <span class="for-screen-reader">Sources</span>
         <% end %>
+        <%= render "shared/report_composer", report: @report %>
         <%= render "reports/mode_buttons", report: @report %>
       <% end %>
     </div>
