@@ -1,0 +1,42 @@
+Analyze the following pages from a technical document for key specifications and details.
+
+## Document Information
+- **Name**: <%= @document.file&.filename&.to_s %>
+- **Pages Being Analyzed**: <%= @page_numbers.join(", ") %>
+
+<% if @focus_areas.any? %>
+## Focus Areas
+Pay special attention to:
+<% @focus_areas.each do |area| %>
+- <%= area %>
+<% end %>
+<% end %>
+
+## Instructions
+For each page:
+1. Identify all technical specifications, measurements, and values
+2. Note any diagrams, tables, or visual elements
+3. Extract component names, part numbers, and compatibility information
+4. Flag any warnings, limitations, or requirements
+
+## Required Output Format
+For each finding, use this format:
+
+**[Category]** - [Specification/Finding]
+- Value: [exact value or description]
+- Source: Page [X], [location on page or description]
+- Notes: [any relevant context]
+
+## Page Text Content
+<%= @page_text_context %>
+
+<% if @page_images.any? %>
+## Page Images
+Examine the provided images for:
+- Technical diagrams and schematics
+- Specification tables
+- Component layouts
+- Pin diagrams and connector specifications
+<% end %>
+
+Begin your analysis:

@@ -1,7 +1,7 @@
-# Active Agent Integration Guide for Writebook
+# Active Agent Integration Guide for Dill
 
 ## Overview
-This document describes how to properly integrate and use the Active Agent gem in the Writebook application for AI-powered features.
+This document describes how to properly integrate and use the Active Agent gem in the Dill application for AI-powered features.
 
 ## Understanding Active Agent
 

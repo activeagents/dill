@@ -13,4 +13,9 @@ class Report < ApplicationRecord
   def press(sectionable, section_params)
     sections.create! section_params.merge(sectionable: sectionable)
   end
+
+  # Get all documents attached to this report via sections
+  def documents
+    Document.joins(:section).where(sections: { report_id: id })
+  end
 end

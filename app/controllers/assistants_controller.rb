@@ -299,6 +299,155 @@ class AssistantsController < ApplicationController
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+  # Tech Diligence: Answer questions about a document
+  def tech_diligence_questions
+    document = Document.find(params[:document_id])
+    questions = params[:questions] || []
+    stream_id = "tech_diligence_#{SecureRandom.hex(8)}"
+
+    TechDiligenceAgent.with(
+      document: document,
+      questions: questions,
+      use_vision: params[:use_vision] != "false",
+      stream_id: stream_id
+    ).answer_questions.generate_later
+
+    render json: { stream_id: stream_id, document_id: document.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Document not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "TechDiligence error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Tech Diligence: Analyze specific pages
+  def tech_diligence_pages
+    document = Document.find(params[:document_id])
+    page_numbers = params[:page_numbers]&.map(&:to_i) || []
+    stream_id = "tech_diligence_#{SecureRandom.hex(8)}"
+
+    TechDiligenceAgent.with(
+      document: document,
+      page_numbers: page_numbers,
+      focus_areas: params[:focus_areas] || [],
+      stream_id: stream_id
+    ).analyze_pages.generate_later
+
+    render json: { stream_id: stream_id, document_id: document.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Document not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "TechDiligence error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Tech Diligence: Extract specifications
+  def tech_diligence_specs
+    document = Document.find(params[:document_id])
+    stream_id = "tech_diligence_#{SecureRandom.hex(8)}"
+
+    TechDiligenceAgent.with(
+      document: document,
+      spec_categories: params[:spec_categories] || %w[cpu memory storage connectivity power],
+      stream_id: stream_id
+    ).extract_specs.generate_later
+
+    render json: { stream_id: stream_id, document_id: document.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Document not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "TechDiligence error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Tech Diligence: Verify claims against document
+  def tech_diligence_verify
+    document = Document.find(params[:document_id])
+    claims = params[:claims] || []
+    stream_id = "tech_diligence_#{SecureRandom.hex(8)}"
+
+    TechDiligenceAgent.with(
+      document: document,
+      claims: claims,
+      stream_id: stream_id
+    ).verify_claims.generate_later
+
+    render json: { stream_id: stream_id, document_id: document.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Document not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "TechDiligence error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Report Composer: Compose a new section from documents
+  def compose_section
+    report = Report.find(params[:report_id])
+    stream_id = "report_composer_#{SecureRandom.hex(8)}"
+
+    ReportComposerAgent.with(
+      report: report,
+      topic: params[:topic],
+      section_type: params[:section_type] || "analysis",
+      document_ids: params[:document_ids],
+      stream_id: stream_id
+    ).compose.generate_later
+
+    render json: { stream_id: stream_id, report_id: report.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Report not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "ReportComposer error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Report Composer: Answer a question using document context
+  def answer_from_documents
+    report = Report.find(params[:report_id])
+    stream_id = "report_composer_#{SecureRandom.hex(8)}"
+
+    ReportComposerAgent.with(
+      report: report,
+      question: params[:question],
+      document_ids: params[:document_ids],
+      stream_id: stream_id
+    ).answer_question.generate_later
+
+    render json: { stream_id: stream_id, report_id: report.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Report not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "ReportComposer error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
+  # Report Composer: Generate content for an existing section
+  def generate_for_section
+    section = Section.find(params[:section_id])
+    stream_id = "report_composer_#{SecureRandom.hex(8)}"
+
+    ReportComposerAgent.with(
+      section: section,
+      prompt: params[:prompt],
+      use_related: params[:use_related] != "false",
+      stream_id: stream_id
+    ).generate_section.generate_later
+
+    render json: { stream_id: stream_id, section_id: section.id }
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Section not found" }, status: :not_found
+  rescue => e
+    Rails.logger.error "ReportComposer error: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
   private
 
   def authorize_page_access!

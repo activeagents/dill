@@ -7,8 +7,8 @@ class DemoContent
 
     private
       def create_report(user)
-        Report.create(title: "The Writebook Manual", everyone_access: true).tap do |report|
-          with_attachment("writebook-manual.jpg") { |attachment| report.cover.attach(attachment) }
+        Report.create(title: "The Dill Manual", everyone_access: true).tap do |report|
+          with_attachment("dill-manual.jpg") { |attachment| report.cover.attach(attachment) }
           report.update_access(readers: [], editors: [ user.id ])
         end
       end

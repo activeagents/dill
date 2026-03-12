@@ -2,7 +2,7 @@
 
 ## Summary
 
-Enhanced the test coverage for Writebook's AI assistant features, fixing broken tests and adding comprehensive new test cases.
+Enhanced the test coverage for Dill's AI assistant features, fixing broken tests and adding comprehensive new test cases.
 
 ## Changes Made
 

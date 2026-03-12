@@ -3,13 +3,13 @@ class DocumentProcessingJob < ApplicationJob
 
   retry_on StandardError, wait: :polynomially_longer, attempts: 3
 
-  def perform(document)
+  def perform(document, extract_images: true)
     return unless document.file.attached?
 
     document.processing!
 
     document.file.open do |tempfile|
-      process_document(document, tempfile.path)
+      process_document(document, tempfile.path, extract_images: extract_images)
     end
 
     document.completed!
@@ -17,6 +17,8 @@ class DocumentProcessingJob < ApplicationJob
     handle_error(document, e, "Unsupported format")
   rescue PdfTextExtractor::ExtractionError => e
     handle_error(document, e, "PDF extraction failed")
+  rescue PdfImageExtractor::ExtractionError => e
+    handle_error(document, e, "PDF image extraction failed")
   rescue StandardError => e
     handle_error(document, e, "Processing failed")
     raise
@@ -24,12 +26,12 @@ class DocumentProcessingJob < ApplicationJob
 
   private
 
-  def process_document(document, file_path)
+  def process_document(document, file_path, extract_images: true)
     document_type = document.document_type || detect_type(document)
 
     case document_type
     when "pdf"
-      process_pdf(document, file_path)
+      process_pdf(document, file_path, extract_images: extract_images)
     when "pptx", "ppt"
       process_pptx(document, file_path)
     when "docx"
@@ -39,17 +41,59 @@ class DocumentProcessingJob < ApplicationJob
     end
   end
 
-  def process_pdf(document, file_path)
-    extractor = PdfTextExtractor.new(file_path)
-    result = extractor.extract
+  def process_pdf(document, file_path, extract_images: true)
+    # Extract text from all pages
+    text_extractor = PdfTextExtractor.new(file_path)
+    text_result = text_extractor.extract
 
     document.update!(
-      page_count: result[:page_count],
-      page_text: result[:pages],
+      page_count: text_result[:page_count],
+      page_text: text_result[:pages],
       document_type: "pdf"
     )
 
-    Rails.logger.info "[DocumentProcessingJob] Extracted #{result[:page_count]} pages from PDF #{document.id}"
+    Rails.logger.info "[DocumentProcessingJob] Extracted #{text_result[:page_count]} pages of text from PDF #{document.id}"
+
+    # Extract page images for VLM analysis
+    if extract_images
+      extract_and_store_page_images(document, file_path)
+    end
+  end
+
+  def extract_and_store_page_images(document, file_path)
+    image_extractor = PdfImageExtractor.new(file_path)
+    image_paths = image_extractor.extract_all
+
+    page_images = {}
+
+    image_paths.each_with_index do |image_path, index|
+      page_number = index + 1
+
+      # Create Active Storage blob from the image
+      blob = ActiveStorage::Blob.create_and_upload!(
+        io: File.open(image_path, "rb"),
+        filename: "#{document.id}_page_#{page_number}.png",
+        content_type: "image/png",
+        metadata: {
+          document_id: document.id,
+          page_number: page_number
+        }
+      )
+
+      page_images[page_number.to_s] = blob.signed_id
+
+      Rails.logger.debug "[DocumentProcessingJob] Stored page #{page_number} image as blob #{blob.id}"
+    end
+
+    document.update!(page_images: page_images)
+
+    Rails.logger.info "[DocumentProcessingJob] Stored #{page_images.size} page images for document #{document.id}"
+  ensure
+    # Clean up temp directory
+    if image_paths&.any?
+      temp_dir = File.dirname(image_paths.first)
+      FileUtils.rm_rf(temp_dir) if temp_dir.start_with?(Dir.tmpdir)
+    end
   end
 
   def process_pptx(document, file_path)

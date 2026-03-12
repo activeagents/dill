@@ -9,6 +9,22 @@
     <p class="txt-warning margin-block-end"><%= flash[:alert] %></p>
   <% end %>
 
+  <%= form_with url: session_path, class: "stack" do |form| %>
+    <div class="field">
+      <%= form.label :email_address, "Email" %>
+      <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "email" %>
+    </div>
+
+    <div class="field">
+      <%= form.label :password %>
+      <%= form.password_field :password, required: true, autocomplete: "current-password" %>
+    </div>
+
+    <%= form.submit "Sign in", class: "btn" %>
+  <% end %>
+
+  <div class="txt-align-center margin-block txt-subtle">or</div>
+
   <%= button_to "/auth/google_oauth2", method: :post, class: "btn btn--reversed center gap", data: { turbo: false } do %>
     <%= image_tag "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg", size: 24, alt: "Google logo" %>
     <span>Sign in with Google</span>

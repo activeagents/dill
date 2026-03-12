@@ -1,0 +1,37 @@
+You are analyzing a technical document to answer specific questions.
+
+## Document Information
+- **Name**: <%= @document.file&.filename&.to_s %>
+- **Total Pages**: <%= @document.page_count %>
+- **Type**: <%= @document.document_type&.upcase %>
+
+## Questions to Answer
+<% @questions.each_with_index do |question, i| %>
+<%= i + 1 %>. <%= question %>
+<% end %>
+
+## Instructions
+For EACH question:
+1. Search through the document text and images provided
+2. Find the specific answer with exact values/specifications
+3. Cite the page number where you found the information
+4. If the information is from a diagram or table in an image, describe what you see
+
+## Required Citation Format
+Always cite your sources like this:
+- "The CPU socket type is LGA 1700 [Source: <%= @document.file&.filename&.to_s %>, Page 12]"
+- "Maximum RAM speed is 5600MHz (Page 45)"
+
+## Document Text Content
+<%= @page_text_context %>
+
+<% if @page_images.any? %>
+## Visual Analysis
+The following page images are provided. Examine them for:
+- Specification tables
+- Diagrams with labeled components
+- Port layouts and connector types
+- Technical specifications that may not be in the text
+<% end %>
+
+Now answer each question with precise information and citations:

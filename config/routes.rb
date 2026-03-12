@@ -117,6 +117,17 @@ Rails.application.routes.draw do
     post "research" => "assistants#research"
     post "analyze_file" => "assistants#analyze_file"
     post "image/caption" => "assistants#image_caption"
+
+    # Tech Diligence endpoints (document analysis with provenance)
+    post "tech_diligence/questions" => "assistants#tech_diligence_questions"
+    post "tech_diligence/pages" => "assistants#tech_diligence_pages"
+    post "tech_diligence/specs" => "assistants#tech_diligence_specs"
+    post "tech_diligence/verify" => "assistants#tech_diligence_verify"
+
+    # Report Composer endpoints (compose sections from documents with auto-referencing)
+    post "composer/section" => "assistants#compose_section"
+    post "composer/answer" => "assistants#answer_from_documents"
+    post "composer/generate" => "assistants#generate_for_section"
   end
 
   get "up" => "rails/health#show", as: :rails_health_check

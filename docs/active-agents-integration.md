@@ -1,8 +1,8 @@
-# Active Agents AI Integration for Writebook
+# Active Agents AI Integration for Dill
 
 ## Overview
 
-This document describes the integration of Active Agents AI framework into Writebook, providing AI-powered writing assistance features directly in the editor.
+This document describes the integration of Active Agents AI framework into Dill, providing AI-powered writing assistance features directly in the editor.
 
 ## Features Implemented
 
@@ -110,7 +110,7 @@ ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 ### For End Users
 
-1. **Open a page for editing** in Writebook
+1. **Open a page for editing** in Dill
 2. **Select text** in the editor (or leave unselected to process entire content)
 3. **Click an AI button** in the toolbar:
    - 🔧 **Improve**: Enhance writing quality

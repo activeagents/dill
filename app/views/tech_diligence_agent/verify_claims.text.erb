@@ -1,0 +1,41 @@
+Verify the following claims against the provided document.
+
+## Document Information
+- **Name**: <%= @document.file&.filename&.to_s %>
+- **Total Pages**: <%= @document.page_count %>
+
+## Claims to Verify
+<% @claims.each_with_index do |claim, i| %>
+<%= i + 1 %>. <%= claim %>
+<% end %>
+
+## Instructions
+For EACH claim:
+1. Search the document for relevant information
+2. Determine if the claim is VERIFIED, CONTRADICTED, or UNVERIFIABLE
+3. Provide the exact evidence from the document
+4. Cite the page number(s)
+
+## Required Output Format
+
+### Claim <%= i + 1 %>: [claim text]
+
+**Status**: [VERIFIED / CONTRADICTED / UNVERIFIABLE / PARTIALLY VERIFIED]
+
+**Evidence**: [exact text or description from document]
+
+**Source**: Page [X], [specific location]
+
+**Notes**: [any caveats, conditions, or additional context]
+
+---
+
+## Document Text Content
+<%= @page_text_context %>
+
+<% if @page_images.any? %>
+## Visual Evidence
+Check images for tables, diagrams, or specifications that may verify or contradict the claims.
+<% end %>
+
+Begin verification:
