@@ -99,6 +99,10 @@
           <span class="for-screen-reader">Sources</span>
         <% end %>
         <%= render "shared/report_composer", report: @report %>
+        <%= button_to save_as_template_report_path(@report), class: "btn txt-medium", title: "Save as Template", data: { turbo_confirm: "Save this report's structure as a reusable template?" } do %>
+          <%= image_tag "copy-paste.svg", aria: { hidden: true }, size: 24 %>
+          <span class="for-screen-reader">Save as Template</span>
+        <% end %>
         <%= render "reports/mode_buttons", report: @report %>
       <% end %>
     </div>

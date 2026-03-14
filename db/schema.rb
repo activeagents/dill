@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.2].define(version: 2026_02_20_213309) do
+ActiveRecord::Schema[8.2].define(version: 2026_03_14_003941) do
   create_table "accesses", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "level", null: false
@@ -239,6 +239,24 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_213309) do
     t.index ["status"], name: "index_findings_on_status"
   end
 
+  create_table "information_requests", force: :cascade do |t|
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.date "due_date"
+    t.string "expected_response"
+    t.text "notes"
+    t.integer "priority", default: 2, null: false
+    t.text "question", null: false
+    t.integer "report_id", null: false
+    t.integer "section_id"
+    t.integer "status", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["priority"], name: "index_information_requests_on_priority"
+    t.index ["report_id"], name: "index_information_requests_on_report_id"
+    t.index ["section_id"], name: "index_information_requests_on_section_id"
+    t.index ["status"], name: "index_information_requests_on_status"
+  end
+
   create_table "pages", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -248,6 +266,20 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_213309) do
     t.string "caption"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "project_templates", force: :cascade do |t|
+    t.text "ai_instructions"
+    t.datetime "created_at", null: false
+    t.integer "created_by_id", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.json "section_schema", default: []
+    t.boolean "shared", default: true, null: false
+    t.string "theme", default: "blue"
+    t.datetime "updated_at", null: false
+    t.index ["created_by_id"], name: "index_project_templates_on_created_by_id"
+    t.index ["shared"], name: "index_project_templates_on_shared"
   end
 
   create_table "reports", force: :cascade do |t|
@@ -387,6 +419,9 @@ ActiveRecord::Schema[8.2].define(version: 2026_02_20_213309) do
   add_foreign_key "agent_references", "agent_tool_calls"
   add_foreign_key "agent_tool_calls", "agent_contexts"
   add_foreign_key "edits", "sections"
+  add_foreign_key "information_requests", "reports"
+  add_foreign_key "information_requests", "sections"
+  add_foreign_key "project_templates", "users", column: "created_by_id"
   add_foreign_key "sections", "reports"
   add_foreign_key "sessions", "users"
   add_foreign_key "source_tags", "sources"

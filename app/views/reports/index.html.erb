@@ -3,7 +3,14 @@
 
 <% content_for :header do %>
   <nav>
-    <span class="btn btn--placeholder" aria-hidden="true"></span>
+    <% if Current.user %>
+      <%= link_to project_templates_path, class: "btn flex-item-justify-start" do %>
+        <%= image_tag "copy-paste.svg", aria: { hidden: true }, size: 24 %>
+        <span class="for-screen-reader">Report Templates</span>
+      <% end %>
+    <% else %>
+      <span class="btn btn--placeholder" aria-hidden="true"></span>
+    <% end %>
 
     <a href="https://dill.vc" class="product__wordmark btn btn--plain txt-large center" target="_blank">
       <span aria-hidden="true">🥒</span>

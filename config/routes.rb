@@ -9,6 +9,21 @@ Rails.application.routes.draw do
   # App routes
   get "reports", to: "reports#index", as: :reports
 
+  # Project Templates
+  resources :project_templates do
+    member do
+      get :preview
+      post :create_report
+    end
+  end
+
+  # Save existing report as template
+  resources :reports, only: [] do
+    member do
+      post :save_as_template
+    end
+  end
+
   resource :first_run, only: %i[ show create ]
 
   resource :session, only: %i[ new create destroy ] do
