@@ -47,3 +47,9 @@ variable "porkbun_secret_key" {
   sensitive   = true
   default     = ""
 }
+
+variable "google_site_verification" {
+  description = "Google site verification TXT record value for domain verification"
+  type        = string
+  default     = ""
+}

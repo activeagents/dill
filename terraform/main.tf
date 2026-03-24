@@ -63,36 +63,9 @@ resource "google_secret_manager_secret_version" "rails_master_key" {
   secret_data = var.rails_master_key
 }
 
-# OAuth Brand (Consent Screen)
-resource "google_iap_brand" "app" {
-  support_email     = var.oauth_support_email
-  application_title = "Dill"
-  project           = var.project_id
-
-  depends_on = [google_project_service.apis]
-}
-
-# OAuth Client
-resource "google_iap_client" "app" {
-  display_name = "Dill Web App"
-  brand        = google_iap_brand.app.name
-}
-
-# Store Google OAuth client secret in Secret Manager
-resource "google_secret_manager_secret" "google_client_secret" {
-  secret_id = "${var.app_name}-google-client-secret"
-
-  replication {
-    auto {}
-  }
-
-  depends_on = [google_project_service.apis]
-}
-
-resource "google_secret_manager_secret_version" "google_client_secret" {
-  secret      = google_secret_manager_secret.google_client_secret.id
-  secret_data = google_iap_client.app.secret
-}
+# OAuth credentials - configure manually in GCP Console
+# The OAuth client ID and secret should be set via gcloud or console
+# and stored in Secret Manager as: dill-google-client-id, dill-google-client-secret
 
 # Service account for Cloud Run
 resource "google_service_account" "cloud_run" {
@@ -107,11 +80,7 @@ resource "google_secret_manager_secret_iam_member" "rails_master_key_access" {
   member    = "serviceAccount:${google_service_account.cloud_run.email}"
 }
 
-resource "google_secret_manager_secret_iam_member" "google_client_secret_access" {
-  secret_id = google_secret_manager_secret.google_client_secret.id
-  role      = "roles/secretmanager.secretAccessor"
-  member    = "serviceAccount:${google_service_account.cloud_run.email}"
-}
+# OAuth secret access will be configured after OAuth is set up manually
 
 # Cloud Run service
 resource "google_cloud_run_v2_service" "app" {
@@ -132,7 +101,7 @@ resource "google_cloud_run_v2_service" "app" {
       image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.app_name}/${var.app_name}:latest"
 
       ports {
-        container_port = 80
+        container_port = 8080
       }
 
       resources {
@@ -168,21 +137,8 @@ resource "google_cloud_run_v2_service" "app" {
         }
       }
 
-      # Google OAuth SSO configuration
-      env {
-        name  = "GOOGLE_CLIENT_ID"
-        value = google_iap_client.app.client_id
-      }
-
-      env {
-        name = "GOOGLE_CLIENT_SECRET"
-        value_source {
-          secret_key_ref {
-            secret  = google_secret_manager_secret.google_client_secret.secret_id
-            version = "latest"
-          }
-        }
-      }
+      # Google OAuth SSO - will be configured after OAuth setup
+      # Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET via gcloud run services update
 
       # Startup probe — Rails needs time to boot (thruster serves loading page meanwhile)
       startup_probe {
@@ -210,7 +166,6 @@ resource "google_cloud_run_v2_service" "app" {
     google_project_service.apis,
     google_artifact_registry_repository.app,
     google_secret_manager_secret_version.rails_master_key,
-    google_secret_manager_secret_version.google_client_secret,
   ]
 }
 
@@ -234,45 +189,26 @@ resource "google_cloud_run_domain_mapping" "custom_domain" {
   }
 
   spec {
-    route_name = google_cloud_run_v2_service.app.name
+    route_name     = google_cloud_run_v2_service.app.name
+    force_override = true
   }
 }
 
 # =============================================================================
-# Porkbun DNS Configuration (only created when domain and API keys are set)
+# Porkbun DNS Configuration
 # =============================================================================
 
 locals {
-  # Google Cloud Run load balancer IPs
-  cloud_run_ips = [
-    "216.239.32.21",
-    "216.239.34.21",
-    "216.239.36.21",
-    "216.239.38.21",
-  ]
-
-  # Check if Porkbun is configured
   porkbun_configured = var.porkbun_api_key != "" && var.porkbun_secret_key != "" && var.domain != ""
 }
 
-# A records for apex domain (dill.vc)
-resource "porkbun_dns_record" "apex_a" {
-  for_each = local.porkbun_configured ? toset(local.cloud_run_ips) : []
+# Google domain verification TXT record
+resource "porkbun_dns_record" "google_verification" {
+  count = local.porkbun_configured && var.google_site_verification != "" ? 1 : 0
 
   domain    = var.domain
   subdomain = ""
-  type      = "A"
-  content   = each.value
-  ttl       = 600
-}
-
-# CNAME record for www subdomain
-resource "porkbun_dns_record" "www_cname" {
-  count = local.porkbun_configured ? 1 : 0
-
-  domain    = var.domain
-  subdomain = "www"
-  type      = "CNAME"
-  content   = "ghs.googlehosted.com"
+  type      = "TXT"
+  content   = var.google_site_verification
   ttl       = 600
 }
