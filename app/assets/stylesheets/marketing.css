@@ -114,7 +114,14 @@
 
 .hero__mockup {
   inline-size: 100%;
-  max-inline-size: 32rem;
+  max-inline-size: 40rem;
+}
+
+.hero__screenshot {
+  inline-size: 100%;
+  block-size: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
 }
 
 .mockup-window {
