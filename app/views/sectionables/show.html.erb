@@ -100,3 +100,8 @@
 <% content_for :footer do %>
   <%= render "sections/navigation", section: @section %>
 <% end %>
+
+<%# References panel for research sources %>
+<% if @section.page? && @section.page.has_research_references? %>
+  <%= render "references/panel", section: @section, report: @report %>
+<% end %>

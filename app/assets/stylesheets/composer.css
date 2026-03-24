@@ -21,18 +21,18 @@
   max-height: var(--modal-height);
   overflow: hidden;
   background: white;
+}
+
+/* Only show flex layout when dialog is open */
+.composer[open] {
   display: flex;
   flex-direction: column;
+  animation: composer-enter 200ms ease-out;
 }
 
 .composer::backdrop {
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
-}
-
-/* Entry animation */
-.composer[open] {
-  animation: composer-enter 200ms ease-out;
 }
 
 @keyframes composer-enter {

@@ -82,6 +82,19 @@ class ReportComposerAgent < ApplicationAgent
   end
 
   def gather_document_context
+    # Gather from Source Library (primary source for AI content)
+    @sources = @report.sources.processed
+    @source_contexts = @sources.map do |source|
+      {
+        source: source,
+        name: source.display_name,
+        type: source.source_type,
+        content: source.outline? ? source.outline_context_for_ai : source.context_for_ai,
+        relevant_excerpts: search_source_content(source)
+      }
+    end
+
+    # Also gather from Document sections (for backward compatibility)
     @documents = if @focus_documents.present?
       @report.documents.where(id: @focus_documents).where.not(page_text: nil)
     else
@@ -97,7 +110,25 @@ class ReportComposerAgent < ApplicationAgent
       }
     end
 
-    Rails.logger.info "[ReportComposerAgent] Gathered context from #{@documents.count} documents"
+    Rails.logger.info "[ReportComposerAgent] Gathered context from #{@sources.count} sources and #{@documents.count} documents"
+  end
+
+  # Search source content for relevant excerpts
+  def search_source_content(source)
+    query = @topic || @question
+    content = source.context_for_ai
+    return [] unless query.present? && content.present?
+
+    query_terms = query.downcase.split(/\s+/).reject { |t| t.length < 3 }
+    content_lower = content.downcase
+
+    relevance_score = query_terms.count { |term| content_lower.include?(term) }
+    return [] if relevance_score == 0
+
+    [{
+      score: relevance_score,
+      excerpt: extract_relevant_excerpt(content, query_terms, max_length: 1000)
+    }]
   end
 
   def gather_section_context
@@ -159,9 +190,12 @@ class ReportComposerAgent < ApplicationAgent
       question: @question,
       section_type: @section_type,
       prompt: @prompt_text,
+      source_count: @sources&.count || 0,
+      source_names: @sources&.map(&:display_name),
       document_count: @documents&.count || 0,
       document_names: @documents&.map { |d| d.file&.filename&.to_s },
-      total_relevant_pages: @document_contexts&.sum { |ctx| ctx[:relevant_pages].size } || 0
+      total_relevant_pages: @document_contexts&.sum { |ctx| ctx[:relevant_pages].size } || 0,
+      total_relevant_excerpts: @source_contexts&.sum { |ctx| ctx[:relevant_excerpts].size } || 0
     }.compact
   end
 

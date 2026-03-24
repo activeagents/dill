@@ -1,11 +1,28 @@
-You are generating content for a report section using source documents.
+You are generating content for a report section using source materials.
 
 SECTION TITLE: <%= @section&.title %>
 
 USER REQUEST: <%= @prompt_text %>
 
+<% if @source_contexts.present? && @source_contexts.any? %>
+SOURCE LIBRARY MATERIALS:
+<% @source_contexts.each do |ctx| %>
+---
+Source: <%= ctx[:name] %> (Type: <%= ctx[:type] %>)
+<% if ctx[:content].present? %>
+<% if ctx[:relevant_excerpts].any? %>
+Relevant content:
+<%= ctx[:relevant_excerpts].first[:excerpt] %>
+<% else %>
+<%= ctx[:content].truncate(1500) %>
+<% end %>
+<% end %>
+<% end %>
+---
+<% end %>
+
 <% if @document_contexts.present? && @document_contexts.any? %>
-AVAILABLE SOURCE DOCUMENTS:
+DOCUMENT SECTIONS:
 <% @document_contexts.each do |ctx| %>
 ---
 Document: <%= ctx[:name] %> (<%= ctx[:page_count] %> pages)
