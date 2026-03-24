@@ -1,0 +1,50 @@
+<% content_for(:title) { "Report Templates | Dill" } %>
+<% @layout_class = "templates" %>
+
+<% content_for :header do %>
+  <nav>
+    <%= link_to reports_path, class: "btn flex-item-justify-start" do %>
+      <%= image_tag "arrow-left.svg", aria: { hidden: true }, size: 24 %>
+      <span class="for-screen-reader">Back to reports</span>
+    <% end %>
+
+    <span class="txt-large center">Report Templates</span>
+
+    <%= link_to new_project_template_path, class: "btn" do %>
+      <%= image_tag "plus.svg", aria: { hidden: true }, size: 24 %>
+      <span class="for-screen-reader">Create new template</span>
+    <% end %>
+  </nav>
+<% end %>
+
+<div class="container pad">
+  <% if @my_templates.any? %>
+    <section class="margin-block-end-lg">
+      <h2 class="txt-large margin-block-end">My Templates</h2>
+      <div class="template-grid">
+        <% @my_templates.each do |template| %>
+          <%= render "project_templates/template_card", template: template %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @shared_templates.any? %>
+    <section class="margin-block-end-lg">
+      <h2 class="txt-large margin-block-end">Team Templates</h2>
+      <div class="template-grid">
+        <% @shared_templates.each do |template| %>
+          <%= render "project_templates/template_card", template: template %>
+        <% end %>
+      </div>
+    </section>
+  <% end %>
+
+  <% if @project_templates.empty? %>
+    <div class="empty-state txt-align-center pad-lg">
+      <p class="txt-large margin-block-end">No templates yet</p>
+      <p class="txt-subtle margin-block-end">Create a template to standardize your report structure.</p>
+      <%= link_to "Create Template", new_project_template_path, class: "btn btn--reversed" %>
+    </div>
+  <% end %>
+</div>

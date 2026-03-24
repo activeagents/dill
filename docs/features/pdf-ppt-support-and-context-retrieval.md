@@ -1,4 +1,4 @@
-# PDF/PPT Support & Enhanced Context Retrieval for Writebook
+# PDF/PPT Support & Enhanced Context Retrieval for Dill
 
 ## Implementation Status
 
@@ -10,7 +10,7 @@
    - New `Document` leafable type for storing PDF/PPTX/DOCX files
    - Per-page text extraction stored in JSON fields
    - Processing status tracking (pending, processing, completed, failed)
-   - Full integration with Writebook's book/leaf system
+   - Full integration with Dill's book/leaf system
 
 2. **PDF Text Extraction** (`app/services/pdf_text_extractor.rb`)
    - Text extraction using pdf-reader gem
@@ -50,7 +50,7 @@
 
 ## Executive Summary
 
-This document outlines the implementation plan for adding PDF and PowerPoint support to Writebook, along with enhanced context retrieval capabilities using vector embeddings or improved search indexing. The goal is to allow users to import document formats and enable the AI assistant to intelligently reference content across sections of a book.
+This document outlines the implementation plan for adding PDF and PowerPoint support to Dill, along with enhanced context retrieval capabilities using vector embeddings or improved search indexing. The goal is to allow users to import document formats and enable the AI assistant to intelligently reference content across sections of a book.
 
 ## Current State Analysis
 

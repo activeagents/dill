@@ -28,12 +28,14 @@ class AgentFragment < ApplicationRecord
   # Fragment types
   enum :fragment_type, {
     selection: "selection",
-    full_document: "full_document"
+    full_document: "full_document",
+    citation: "citation",
+    spec_extraction: "spec_extraction"
   }, prefix: true
 
   # Validations
   validates :action_type, presence: true
-  validates :original_content, presence: true
+  validates :original_content, presence: true, unless: -> { fragment_type_citation? || fragment_type_spec_extraction? }
 
   # Callbacks
   before_create :compute_content_hash
@@ -41,8 +43,11 @@ class AgentFragment < ApplicationRecord
   # Scopes
   scope :recent, -> { order(created_at: :desc) }
   scope :for_page, ->(page) { where(contextable: page) }
+  scope :for_document, ->(document) { where(contextable: document) }
   scope :with_generations, -> { where.not(generated_content: nil) }
   scope :active, -> { where.not(status: :discarded) }
+  scope :citations, -> { where(fragment_type: :citation) }
+  scope :with_page_reference, ->(page_num) { where("metadata->>'page_number' = ?", page_num.to_s) }
 
   # Compute SHA256 hash of original content for change detection
   def compute_content_hash
@@ -145,5 +150,29 @@ class AgentFragment < ApplicationRecord
   # Check if content was modified from generated to applied
   def was_modified_on_apply?
     applied_content.present? && applied_content != generated_content
+  end
+
+  # Provenance helper methods for citation fragments
+  def source_page_number
+    metadata&.dig("page_number")
+  end
+
+  def source_document_name
+    metadata&.dig("source_document")
+  end
+
+  def citation_confidence
+    metadata&.dig("confidence")
+  end
+
+  # Format citation for display
+  def formatted_citation
+    return nil unless fragment_type_citation?
+
+    parts = []
+    parts << source_document_name if source_document_name.present?
+    parts << "Page #{source_page_number}" if source_page_number.present?
+
+    "[Source: #{parts.join(', ')}]"
   end
 end

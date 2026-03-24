@@ -1,5 +1,5 @@
 <% content_for(:title) { @report.title } %>
-<% @layout_class = "report" %>
+<% @layout_class = "book" %>
 
 <% content_for :head do %>
   <%= tag.meta property: "og:title", content: @report.title %>
@@ -14,7 +14,7 @@
 <% end %>
 
 <% content_for :header do %>
-  <nav class="report__navbar">
+  <nav class="book__navbar">
     <%= link_to root_path, class: "btn" do %>
       <%= image_tag "arrow-left.svg", aria: { hidden: true }, size: 24 %>
       <span class="for-screen-reader">Go back</span>
@@ -50,15 +50,15 @@
 
 <% cache [ @report, @report.editable? ] do %>
   <aside class="txt-align-center margin-block">
-    <div class="report__sidebar <%= "theme--#{@report&.theme}" unless @report.cover.attached? %>">
+    <div class="book__sidebar <%= "theme--#{@report&.theme}" unless @report.cover.attached? %>">
       <% if @report.cover.attached? %>
         <%= link_to rails_blob_path(@report.cover, disposition: "attachment", only_path: true), data: { action: "lightbox#open:prevent", lightbox_target: "image", lightbox_url_value: rails_blob_path(@report.cover, disposition: "attachment", only_path: true) } do %>
-          <%= image_tag @report.cover, alt: "Cover for #{ @report.title }", class: "report__cover margin-block-none center" %>
+          <%= image_tag @report.cover, alt: "Cover for #{ @report.title }", class: "book__cover margin-block-none center" %>
         <% end %>
       <% else %>
-        <span class="report__cover-wrapper">
-          <%= image_tag "empty-cover.png", alt: "Report cover", class: "report__cover margin-block-none center" %>
-          <span class="report__title overflow-line-clamp pad txt-align-start txt-tight-lines" style="--lines: 6" aria-hidden="true"><%= @report.title %></span>
+        <span class="book__cover-wrapper">
+          <%= image_tag "empty-cover.png", alt: "Report cover", class: "book__cover margin-block-none center" %>
+          <span class="book__title overflow-line-clamp pad txt-align-start txt-tight-lines" style="--lines: 6" aria-hidden="true"><%= @report.title %></span>
         </span>
       <% end %>
 
@@ -74,12 +74,12 @@
 
   <%= arrangement_tag @report, class: "arrangement__container toc__container full-width txt-align-center" do %>
     <h1 class="flex flex-column txt-tight-lines txt-align-start margin-block-end">
-      <strong class="report__title txt-x-large--responsive"><%= @report.title %></strong>
+      <strong class="book__title txt-x-large--responsive"><%= @report.title %></strong>
       <span class="txt-large--responsive txt-normal"><%= @report.subtitle %></span>
       <span class="txt-large--responsive txt-normal"><%= @report.author %></span>
     </h1>
 
-    <div class="report__toolbar fill-white flex gap-half pad-block margin-block-end-half justify-center <%= "position-sticky" if @report.editable? %>" data-controller="toc-view" data-toc-view-id-value="<%= dom_id(@report) %>">
+    <div class="book__toolbar fill-white flex gap-half pad-block margin-block-end-half justify-center <%= "position-sticky" if @report.editable? %>" data-controller="toc-view" data-toc-view-id-value="<%= dom_id(@report) %>">
       <label class="btn txt-medium disable-when-empty">
         <input type="radio" name="view" id="toc-list" value="list" data-toc-view-target="switch" data-toc-view-type-value="list" data-action="toc-view#saveViewPref">
         <%= image_tag "view-list.svg", aria: { hidden: true }, size: 24 %>
@@ -97,6 +97,11 @@
         <%= link_to report_sources_path(@report), class: "btn txt-medium", title: "Manage sources" do %>
           <%= image_tag "document-icon.svg", aria: { hidden: true }, size: 24 %>
           <span class="for-screen-reader">Sources</span>
+        <% end %>
+        <%= render "shared/report_composer", report: @report %>
+        <%= button_to save_as_template_report_path(@report), class: "btn txt-medium", title: "Save as Template", data: { turbo_confirm: "Save this report's structure as a reusable template?" } do %>
+          <%= image_tag "copy-paste.svg", aria: { hidden: true }, size: 24 %>
+          <span class="for-screen-reader">Save as Template</span>
         <% end %>
         <%= render "reports/mode_buttons", report: @report %>
       <% end %>
@@ -128,7 +133,7 @@
 <% end %>
 
 <% content_for :footer do %>
-  <nav class="report__nav flex align-center justify-center">
+  <nav class="book__nav flex align-center justify-center">
     <a href="https://dill.vc" class="product__wordmark btn btn--plain txt-medium" target="_blank">
       <span aria-hidden="true">🥒</span>
       <span>Made with Dill</span>

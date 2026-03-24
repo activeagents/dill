@@ -1,0 +1,24 @@
+<% content_for(:title) { "Create Template" } %>
+
+<% content_for :header do %>
+  <nav>
+    <%= link_to project_templates_path, class: "btn flex-item-justify-start" do %>
+      <%= image_tag "arrow-left.svg", aria: { hidden: true }, size: 24 %>
+      <span class="for-screen-reader">Cancel and go back</span>
+    <% end %>
+
+    <span class="txt-large center">Create Template</span>
+
+    <span class="btn btn--placeholder" aria-hidden="true"></span>
+  </nav>
+<% end %>
+
+<%= render "form", project_template: @project_template %>
+
+<% content_for :footer do %>
+  <nav class="flex justify-center pad">
+    <button type="submit" form="template-form" class="btn btn--reversed txt-medium--responsive">
+      Create Template
+    </button>
+  </nav>
+<% end %>

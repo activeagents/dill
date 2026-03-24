@@ -1,0 +1,49 @@
+<div class="section-field stack gap-sm" data-section-schema-target="section" data-index="<%= index %>">
+  <div class="flex gap-sm align-center">
+    <span class="txt-subtle section-number"><%= index.is_a?(Integer) ? index + 1 : "" %>.</span>
+
+    <div class="field flex-grow">
+      <input type="text"
+             name="project_template[section_schema][][title]"
+             value="<%= section['title'] %>"
+             class="field__input"
+             placeholder="Section title"
+             required>
+    </div>
+
+    <div class="field">
+      <select name="project_template[section_schema][][type]" class="field__input">
+        <% %w[Page TextBlock Finding Picture Document].each do |type| %>
+          <option value="<%= type %>" <%= 'selected' if section['type'] == type %>><%= type %></option>
+        <% end %>
+      </select>
+    </div>
+
+    <label class="checkbox txt-small">
+      <input type="hidden" name="project_template[section_schema][][required]" value="false">
+      <input type="checkbox"
+             name="project_template[section_schema][][required]"
+             value="true"
+             <%= 'checked' if section['required'] %>>
+      <span>Required</span>
+    </label>
+
+    <button type="button" class="btn btn--small btn--ghost" data-action="section-schema#removeSection" title="Remove section">
+      &times;
+    </button>
+  </div>
+
+  <div class="field margin-inline-start-lg">
+    <textarea name="project_template[section_schema][][instructions]"
+              class="field__input txt-small"
+              rows="2"
+              placeholder="AI instructions for this section (e.g., 'Analyze the security architecture and identify potential vulnerabilities...')"><%= section['instructions'] %></textarea>
+  </div>
+
+  <div class="field margin-inline-start-lg">
+    <textarea name="project_template[section_schema][][placeholder]"
+              class="field__input txt-small"
+              rows="2"
+              placeholder="Placeholder content or structure hints (e.g., '## Overview\n\n## Key Findings\n\n## Recommendations')"><%= section['placeholder'] %></textarea>
+  </div>
+</div>

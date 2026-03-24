@@ -1,0 +1,71 @@
+<%= form_with model: project_template, id: "template-form", class: "container pad" do |form| %>
+  <% if project_template.errors.any? %>
+    <div class="flash flash--error margin-block-end">
+      <ul>
+        <% project_template.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="stack gap-lg">
+    <section class="stack gap-md">
+      <h2 class="txt-medium">Basic Information</h2>
+
+      <div class="field">
+        <%= form.label :name, class: "field__label" %>
+        <%= form.text_field :name, class: "field__input", required: true, placeholder: "e.g., Technical Due Diligence Report" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :description, class: "field__label" %>
+        <%= form.text_area :description, class: "field__input", rows: 3, placeholder: "Describe when and how this template should be used..." %>
+      </div>
+
+      <div class="flex gap-md">
+        <div class="field">
+          <%= form.label :theme, class: "field__label" %>
+          <%= form.select :theme, ProjectTemplate::THEMES.map { |t| [t.capitalize, t] }, {}, class: "field__input" %>
+        </div>
+
+        <div class="field">
+          <%= form.label :shared, "Share with team", class: "field__label" %>
+          <label class="checkbox">
+            <%= form.check_box :shared %>
+            <span>Allow team members to use this template</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section class="stack gap-md">
+      <h2 class="txt-medium">AI Instructions</h2>
+      <p class="txt-subtle txt-small">These instructions will be used by the AI when generating content for sections. Be specific about your requirements, citation format, and any domain-specific guidelines.</p>
+
+      <div class="field">
+        <%= form.text_area :ai_instructions, class: "field__input", rows: 6, placeholder: "You are an expert analyst. Always cite sources using [Source: document, Page X] format. Focus on risks, opportunities, and actionable recommendations..." %>
+      </div>
+    </section>
+
+    <section class="stack gap-md" data-controller="section-schema">
+      <div class="flex justify-between align-center">
+        <h2 class="txt-medium">Sections</h2>
+        <button type="button" class="btn btn--small" data-action="section-schema#addSection">
+          Add Section
+        </button>
+      </div>
+      <p class="txt-subtle txt-small">Define the sections that will be created in reports using this template. Each section can have specific AI instructions.</p>
+
+      <div class="sections-list stack gap-md" data-section-schema-target="list">
+        <% (project_template.section_schema.presence || [{ "title" => "", "type" => "Page", "instructions" => "", "required" => true }]).each_with_index do |section, index| %>
+          <%= render "section_fields", form: form, section: section, index: index %>
+        <% end %>
+      </div>
+
+      <template data-section-schema-target="template">
+        <%= render "section_fields", form: form, section: { "title" => "", "type" => "Page", "instructions" => "", "required" => true }, index: "INDEX" %>
+      </template>
+    </section>
+  </div>
+<% end %>

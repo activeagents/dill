@@ -1,0 +1,53 @@
+You are answering a due diligence question using source materials from a report.
+
+QUESTION: <%= @question %>
+
+<% if @source_contexts.present? && @source_contexts.any? %>
+SOURCE LIBRARY MATERIALS:
+<% @source_contexts.each do |ctx| %>
+---
+Source: <%= ctx[:name] %> (Type: <%= ctx[:type] %>)
+<% if ctx[:content].present? %>
+<% if ctx[:relevant_excerpts].any? %>
+Relevant content (relevance score: <%= ctx[:relevant_excerpts].first[:score] %>):
+<%= ctx[:relevant_excerpts].first[:excerpt] %>
+<% else %>
+Content:
+<%= ctx[:content].truncate(2000) %>
+<% end %>
+<% end %>
+<% end %>
+---
+<% end %>
+
+<% if @document_contexts.present? && @document_contexts.any? %>
+DOCUMENT SECTIONS:
+<% @document_contexts.each do |ctx| %>
+---
+Document: <%= ctx[:name] %> (<%= ctx[:page_count] %> pages)
+<% if ctx[:relevant_pages].any? %>
+Relevant pages found: <%= ctx[:relevant_pages].map { |p| p[:page] }.join(", ") %>
+<% ctx[:relevant_pages].first(5).each do |page_info| %>
+
+Page <%= page_info[:page] %> (relevance score: <%= page_info[:score] %>):
+<%= page_info[:excerpt] %>
+<% end %>
+<% else %>
+No specific pages matched the question.
+<% end %>
+<% end %>
+---
+<% end %>
+
+<% unless (@source_contexts.present? && @source_contexts.any?) || (@document_contexts.present? && @document_contexts.any?) %>
+No source materials available. Unable to answer the question from primary sources.
+<% end %>
+
+INSTRUCTIONS:
+1. Answer the question thoroughly using ONLY information from the documents above
+2. Cite every factual claim with: [Source: document_name, Page X]
+3. If the documents don't contain enough information, clearly state what's missing
+4. Structure your answer with clear sections if the answer is complex
+5. Be precise and objective
+
+Your answer:

@@ -11,6 +11,7 @@ class Document < ApplicationRecord
   enum :processing_status, PROCESSING_STATUSES.index_by(&:itself), default: :pending
 
   after_create_commit :process_document_async, if: :file_attached?
+  after_update_commit :reindex_section, if: :should_reindex?
 
   def searchable_content
     return nil if page_text.blank?
@@ -28,6 +29,32 @@ class Document < ApplicationRecord
 
   def image_for_page(page_number)
     page_images[page_number.to_s]
+  end
+
+  # Returns the Active Storage blob for a page image
+  def image_blob_for_page(page_number)
+    signed_id = image_for_page(page_number)
+    return nil unless signed_id
+
+    ActiveStorage::Blob.find_signed(signed_id)
+  rescue ActiveSupport::MessageVerifier::InvalidSignature
+    nil
+  end
+
+  # Returns base64-encoded image data URI for VLM analysis
+  def image_data_uri_for_page(page_number)
+    blob = image_blob_for_page(page_number)
+    return nil unless blob
+
+    blob.open do |tempfile|
+      base64_data = Base64.strict_encode64(tempfile.read)
+      "data:#{blob.content_type};base64,#{base64_data}"
+    end
+  end
+
+  # Check if page images have been extracted
+  def has_page_images?
+    page_images.present? && page_images.any?
   end
 
   def context_for_pages(range)
@@ -72,5 +99,16 @@ class Document < ApplicationRecord
     save! if document_type_changed?
 
     DocumentProcessingJob.perform_later(self)
+  end
+
+  def should_reindex?
+    saved_change_to_page_text? || saved_change_to_processing_status?
+  end
+
+  def reindex_section
+    return unless section&.persisted?
+
+    section.reindex
+    Rails.logger.info "[Document] Reindexed section #{section.id} for document #{id}"
   end
 end

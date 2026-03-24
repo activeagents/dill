@@ -1,7 +1,7 @@
 {
   "name": "dill",
   "version": "1.0.0",
-  "description": "A fork of Writebook with integrated AI writing assistance powered by ActiveAgent and SolidAgent.",
+  "description": "AI-powered due diligence platform with document analysis powered by ActiveAgent.",
   "main": "index.js",
   "directories": {
     "doc": "docs",

@@ -2,9 +2,9 @@ class ReportsController < ApplicationController
   allow_unauthenticated_access only: %i[ index show ]
 
   before_action :ensure_index_is_not_empty, only: :index
-  before_action :set_report, only: %i[ show edit update destroy ]
+  before_action :set_report, only: %i[ show edit update destroy save_as_template ]
   before_action :set_users, only: %i[ new edit ]
-  before_action :ensure_editable, only: %i[ edit update destroy ]
+  before_action :ensure_editable, only: %i[ edit update destroy save_as_template ]
 
   def index
     @reports = Report.accessable_or_published.ordered
@@ -40,6 +40,21 @@ class ReportsController < ApplicationController
     @report.destroy
 
     redirect_to root_url
+  end
+
+  def save_as_template
+    @template = ProjectTemplate.from_report(
+      @report,
+      name: "#{@report.title} Template",
+      user: Current.user
+    )
+
+    if @template.save
+      redirect_to edit_project_template_path(@template),
+        notice: "Template created from report. Add AI instructions for each section."
+    else
+      redirect_to @report, alert: "Could not create template: #{@template.errors.full_messages.join(', ')}"
+    end
   end
 
   private

@@ -24,7 +24,9 @@
 
       <%= tag.span(simple_format(section.text_block.body), class: "txt-align-center") if section.text_block? %>
 
-      <%= sanitize_content section.page.html_preview if section.page? %>
+      <% if section.page? %>
+        <span class="toc__preview"><%= truncate(section.page.searchable_content, length: 300) %></span>
+      <% end %>
 
       <% if section.picture? %>
         <%= image_tag section.sectionable.image.attached? ? section.sectionable.image.variant(:large) : "default-picture.webp" %>

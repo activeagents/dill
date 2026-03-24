@@ -1,0 +1,54 @@
+You are generating content for a report section using source materials.
+
+SECTION TITLE: <%= @section&.title %>
+
+USER REQUEST: <%= @prompt_text %>
+
+<% if @source_contexts.present? && @source_contexts.any? %>
+SOURCE LIBRARY MATERIALS:
+<% @source_contexts.each do |ctx| %>
+---
+Source: <%= ctx[:name] %> (Type: <%= ctx[:type] %>)
+<% if ctx[:content].present? %>
+<% if ctx[:relevant_excerpts].any? %>
+Relevant content:
+<%= ctx[:relevant_excerpts].first[:excerpt] %>
+<% else %>
+<%= ctx[:content].truncate(1500) %>
+<% end %>
+<% end %>
+<% end %>
+---
+<% end %>
+
+<% if @document_contexts.present? && @document_contexts.any? %>
+DOCUMENT SECTIONS:
+<% @document_contexts.each do |ctx| %>
+---
+Document: <%= ctx[:name] %> (<%= ctx[:page_count] %> pages)
+<% if ctx[:relevant_pages].any? %>
+Relevant pages: <%= ctx[:relevant_pages].map { |p| p[:page] }.join(", ") %>
+<% ctx[:relevant_pages].first(3).each do |page_info| %>
+
+Page <%= page_info[:page] %>:
+<%= page_info[:excerpt] %>
+<% end %>
+<% end %>
+<% end %>
+---
+<% end %>
+
+<% if @related_content.present? %>
+RELATED CONTENT FROM THIS REPORT:
+<%= @related_content %>
+---
+<% end %>
+
+INSTRUCTIONS:
+1. Generate content based on the user's request
+2. Draw from the source documents provided above
+3. Cite claims with: [Source: document_name, Page X]
+4. Maintain consistency with any related content
+5. Use clear structure with headings and bullet points
+
+Generated content:

@@ -2,13 +2,13 @@
 
 ## Overview
 
-This document describes the implementation of real-time streaming for AI-generated image captions and all writing assistant features in Writebook.
+This document describes the implementation of real-time streaming for AI-generated image captions and all writing assistant features in Dill.
 
 ## Feature: Streaming Image Captions
 
 ### What Was Implemented
 
-When a user uploads an image to a Writebook page:
+When a user uploads an image to a Dill page:
 1. The image renders immediately in the markdown editor
 2. An AI-generated caption streams in real-time below the image
 3. The caption appears as it's being generated, providing immediate feedback

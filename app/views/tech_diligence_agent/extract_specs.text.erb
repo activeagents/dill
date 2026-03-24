@@ -1,0 +1,35 @@
+Extract all technical specifications from this document into structured categories.
+
+## Document Information
+- **Name**: <%= @document.file&.filename&.to_s %>
+- **Total Pages**: <%= @document.page_count %>
+- **Type**: <%= @document.document_type&.upcase %>
+
+## Categories to Extract
+<% @spec_categories.each do |category| %>
+- **<%= category.titleize %>**: All <%= category %>-related specifications
+<% end %>
+
+## Instructions
+1. Search through all provided text and images
+2. Extract EVERY specification you can find in the requested categories
+3. Include exact values, ranges, and supported standards
+4. Cite the page number for each specification
+
+## Required Output Format
+
+### [Category Name]
+
+| Specification | Value | Page | Notes |
+|--------------|-------|------|-------|
+| [spec name] | [value] | [page #] | [any notes] |
+
+## Document Text Content
+<%= @page_text_context %>
+
+<% if @page_images.any? %>
+## Visual Content
+Examine images for specification tables, diagrams with labeled values, and any visual specifications that may not appear in the text.
+<% end %>
+
+Extract all specifications now:

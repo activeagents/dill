@@ -1,0 +1,28 @@
+<div class="template-card stack gap-sm" data-theme="<%= template.theme %>">
+  <div class="template-card__header">
+    <h3 class="txt-medium">
+      <%= link_to template.name, template, class: "link-plain" %>
+    </h3>
+    <% if template.shared? %>
+      <span class="badge badge--subtle" title="Shared with team">Shared</span>
+    <% end %>
+  </div>
+
+  <% if template.description.present? %>
+    <p class="txt-subtle txt-small"><%= truncate(template.description, length: 100) %></p>
+  <% end %>
+
+  <div class="template-card__sections txt-small txt-subtle">
+    <%= pluralize(template.section_schema.size, "section") %>
+  </div>
+
+  <div class="template-card__actions flex gap-sm">
+    <%= button_to "Use Template", create_report_project_template_path(template),
+        class: "btn btn--small btn--reversed",
+        data: { turbo_confirm: "Create a new report from this template?" } %>
+
+    <% if template.created_by == Current.user %>
+      <%= link_to "Edit", edit_project_template_path(template), class: "btn btn--small" %>
+    <% end %>
+  </div>
+</div>

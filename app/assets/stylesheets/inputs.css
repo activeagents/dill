@@ -144,6 +144,86 @@
   }
 }
 
+/* Radio Cards - selectable card-style radio buttons */
+.radio-card {
+  --card-bg: var(--color-bg);
+  --card-border: var(--color-subtle-dark);
+  --card-padding: 1rem 1.25rem;
+
+  align-items: center;
+  background: var(--card-bg);
+  border: 2px solid var(--card-border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-inline-size: 5.5rem;
+  padding: var(--card-padding);
+  transition: all 150ms ease;
+  user-select: none;
+
+  &:hover {
+    --card-border: var(--color-subtle-dark);
+    background: var(--color-shade);
+  }
+
+  /* Hide the actual radio input */
+  input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* Selected state */
+  &:has(input:checked) {
+    background: var(--color-link);
+    border-color: var(--color-link);
+    color: white;
+
+    img {
+      filter: brightness(0) invert(1);
+    }
+  }
+
+  /* Focus state */
+  &:has(input:focus-visible) {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+  }
+}
+
+.radio-card__label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  font-weight: 500;
+  font-size: 0.875rem;
+
+  img {
+    block-size: 1.75rem;
+    inline-size: 1.75rem;
+    transition: filter 150ms ease;
+  }
+}
+
+/* Horizontal layout variant */
+.radio-card--horizontal {
+  flex-direction: row;
+  min-inline-size: auto;
+
+  .radio-card__label {
+    flex-direction: row;
+    gap: 0.5rem;
+
+    img {
+      block-size: 1.5rem;
+      inline-size: 1.5rem;
+    }
+  }
+}
+
 /* Containers that act like (and contain) inputs */
 .input--actor {
   transition: box-shadow 150ms ease, outline-offset 150ms ease;
