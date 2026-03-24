@@ -47,6 +47,7 @@ screenshots/
 terraform/.terraform/
 terraform/.terraform.lock.hcl
 terraform/*.tfstate
-terraform/*.tfstate.backup
-terraform/terraform.tfvars
+terraform/*.tfstate.*
+terraform/*.tfvars
+terraform/*.tfvars.*
 terraform/.terraform.tfstate.lock.info
