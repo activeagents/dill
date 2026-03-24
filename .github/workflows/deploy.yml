@@ -8,12 +8,12 @@ on:
     types: [labeled, opened, synchronize, reopened]
 
 env:
-  GCP_PROJECT_ID: dill-vc
+  GCP_PROJECT_ID: dill-488620
   GCP_REGION: us-central1
   SERVICE_NAME: dill
-  ARTIFACT_REGISTRY: dill-vc/dill
-  WORKLOAD_IDENTITY_PROVIDER: projects/48483662515/locations/global/workloadIdentityPools/github-actions/providers/github
-  SERVICE_ACCOUNT: github-actions@dill-vc.iam.gserviceaccount.com
+  ARTIFACT_REGISTRY: dill-488620/dill
+  WORKLOAD_IDENTITY_PROVIDER: projects/969854275436/locations/global/workloadIdentityPools/github-actions/providers/github
+  SERVICE_ACCOUNT: github-actions@dill-488620.iam.gserviceaccount.com
 
 permissions:
   contents: read
