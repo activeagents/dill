@@ -53,3 +53,11 @@ variable "google_site_verification" {
   type        = string
   default     = ""
 }
+
+# AI Provider API Keys
+variable "gemini_api_key" {
+  description = "Google Gemini API key for AI features"
+  type        = string
+  sensitive   = true
+  default     = ""
+}

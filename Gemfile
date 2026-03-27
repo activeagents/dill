@@ -57,7 +57,7 @@ end
 gem "reactionview", "~> 0.1.2"
 
 # AI Integration
-gem "activeagent", "~> 1.0.1"
+gem "activeagent", github: "activeagents/activeagent"  # Use main for Gemini provider support
 gem "solid_agent", github: "activeagents/solid_agent"
 gem "openai"
 gem "ruby-anthropic"  # For Anthropic/Claude support

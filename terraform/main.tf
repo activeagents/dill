@@ -30,6 +30,7 @@ resource "google_project_service" "apis" {
     "artifactregistry.googleapis.com",
     "cloudbuild.googleapis.com",
     "secretmanager.googleapis.com",
+    "generativelanguage.googleapis.com",  # Google Gemini API
   ])
 
   project            = var.project_id
@@ -63,6 +64,24 @@ resource "google_secret_manager_secret_version" "rails_master_key" {
   secret_data = var.rails_master_key
 }
 
+# Store Gemini API key in Secret Manager (optional - only if provided)
+resource "google_secret_manager_secret" "gemini_api_key" {
+  count     = var.gemini_api_key != "" ? 1 : 0
+  secret_id = "${var.app_name}-gemini-api-key"
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_secret_manager_secret_version" "gemini_api_key" {
+  count       = var.gemini_api_key != "" ? 1 : 0
+  secret      = google_secret_manager_secret.gemini_api_key[0].id
+  secret_data = var.gemini_api_key
+}
+
 # OAuth credentials - configure manually in GCP Console
 # The OAuth client ID and secret should be set via gcloud or console
 # and stored in Secret Manager as: dill-google-client-id, dill-google-client-secret
@@ -76,6 +95,14 @@ resource "google_service_account" "cloud_run" {
 # Grant the service account access to read secrets
 resource "google_secret_manager_secret_iam_member" "rails_master_key_access" {
   secret_id = google_secret_manager_secret.rails_master_key.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+
+# Grant access to Gemini API key secret (if configured)
+resource "google_secret_manager_secret_iam_member" "gemini_api_key_access" {
+  count     = var.gemini_api_key != "" ? 1 : 0
+  secret_id = google_secret_manager_secret.gemini_api_key[0].id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.cloud_run.email}"
 }
@@ -133,6 +160,20 @@ resource "google_cloud_run_v2_service" "app" {
           secret_key_ref {
             secret  = google_secret_manager_secret.rails_master_key.secret_id
             version = "latest"
+          }
+        }
+      }
+
+      # Google Gemini API key (if configured)
+      dynamic "env" {
+        for_each = var.gemini_api_key != "" ? [1] : []
+        content {
+          name = "GEMINI_API_KEY"
+          value_source {
+            secret_key_ref {
+              secret  = google_secret_manager_secret.gemini_api_key[0].secret_id
+              version = "latest"
+            }
           }
         }
       }

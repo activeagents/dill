@@ -81,6 +81,12 @@ development:
     api_key: <%= ENV['ANTHROPIC_API_KEY'] || Rails.application.credentials.dig(:anthropic, :api_key) %>
     model: "claude-3-5-sonnet-latest"
     temperature: 0.7
+
+  gemini:
+    service: "Gemini"
+    api_key: <%= ENV['GEMINI_API_KEY'] || Rails.application.credentials.dig(:gemini, :api_key) %>
+    model: "gemini-2.0-flash"
+    temperature: 0.7
 ```
 
 ## Common Pitfalls and Solutions

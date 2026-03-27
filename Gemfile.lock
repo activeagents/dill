@@ -1,4 +1,15 @@
 GIT
+  remote: https://github.com/activeagents/activeagent.git
+  revision: fe3db1c23330f591da3e5cf9a9aee65baa529e18
+  specs:
+    activeagent (1.0.1)
+      actionpack (>= 7.2, <= 9.0)
+      actionview (>= 7.2, <= 9.0)
+      activejob (>= 7.2, <= 9.0)
+      activemodel (>= 7.2, <= 9.0)
+      activesupport (>= 7.2, <= 9.0)
+
+GIT
   remote: https://github.com/activeagents/solid_agent.git
   revision: eeba5984270ca28f10610c0a46433004c9bc5dba
   specs:
@@ -119,12 +130,6 @@ GEM
     Ascii85 (2.0.1)
     action_text-trix (2.1.15)
       railties
-    activeagent (1.0.1)
-      actionpack (>= 7.2, <= 9.0)
-      actionview (>= 7.2, <= 9.0)
-      activejob (>= 7.2, <= 9.0)
-      activemodel (>= 7.2, <= 9.0)
-      activesupport (>= 7.2, <= 9.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     afm (1.0.0)
@@ -502,7 +507,7 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
-  activeagent (~> 1.0.1)
+  activeagent!
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
