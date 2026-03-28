@@ -65,7 +65,7 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true \
-            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest \
+            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=dill-gemini-api-key:latest \
             --format "value(uri)")
           echo "url=${URL}" >> ${GITHUB_OUTPUT}
 
@@ -123,4 +123,4 @@ jobs:
             --platform managed \
             --allow-unauthenticated \
             --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true \
-            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest
+            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=dill-gemini-api-key:latest
