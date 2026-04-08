@@ -24,8 +24,8 @@ Rails.application.configure do
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
 
-  # Store uploaded files on the local file system (see config/storage.yml for options).
-  config.active_storage.service = :local
+  # Store uploaded files in Google Cloud Storage (see config/storage.yml for options).
+  config.active_storage.service = :google
 
   # Log to STDOUT by default
   config.logger = ActiveSupport::Logger.new(STDOUT)
@@ -65,7 +65,6 @@ Rails.application.configure do
   # SQLite is good, actually
   # config.active_record.sqlite3_production_warning = false
 
-  # Use async queue adapter in production for now to avoid SQLite locking issues
-  # TODO: Re-enable SolidQueue when using Cloud SQL
-  config.active_job.queue_adapter = :async
+  # Use SolidQueue with PostgreSQL (Cloud SQL)
+  config.active_job.queue_adapter = :solid_queue
 end

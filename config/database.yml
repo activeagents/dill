@@ -1,3 +1,4 @@
+# SQLite for development (fast, no setup required)
 default: &default
   adapter: sqlite3
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 10 } %>
@@ -22,11 +23,30 @@ test:
     database: storage/db/test_queue.sqlite3
     migrations_paths: db/queue_migrate
 
+# PostgreSQL for staging/production (Cloud SQL)
+# DATABASE_URL is set via Secret Manager in Cloud Run
+staging:
+  primary:
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    url: <%= ENV["DATABASE_URL"] %>
+  queue:
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    url: <%= ENV["DATABASE_URL"] %>
+    migrations_paths: db/queue_migrate
+
 production:
   primary:
-    <<: *default
-    database: storage/db/production.sqlite3
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    url: <%= ENV["DATABASE_URL"] %>
   queue:
-    <<: *default
-    database: storage/db/production_queue.sqlite3
+    adapter: postgresql
+    encoding: unicode
+    pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+    url: <%= ENV["DATABASE_URL"] %>
     migrations_paths: db/queue_migrate

@@ -61,3 +61,23 @@ variable "gemini_api_key" {
   sensitive   = true
   default     = ""
 }
+
+# Database Configuration
+variable "db_tier" {
+  description = "Cloud SQL instance tier"
+  type        = string
+  default     = "db-f1-micro"  # Smallest tier for cost savings
+}
+
+variable "db_password" {
+  description = "PostgreSQL database password"
+  type        = string
+  sensitive   = true
+}
+
+# Storage Configuration
+variable "storage_location" {
+  description = "GCS bucket location"
+  type        = string
+  default     = "US"
+}

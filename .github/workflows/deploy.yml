@@ -14,6 +14,8 @@ env:
   ARTIFACT_REGISTRY: dill-488620/dill
   WORKLOAD_IDENTITY_PROVIDER: projects/969854275436/locations/global/workloadIdentityPools/github-actions/providers/github
   SERVICE_ACCOUNT: github-actions@dill-488620.iam.gserviceaccount.com
+  # Cloud SQL instance connection name (project:region:instance)
+  CLOUD_SQL_CONNECTION: dill-488620:us-central1:dill-db
 
 permissions:
   contents: read
@@ -64,8 +66,9 @@ jobs:
             --region ${{ env.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true \
-            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=dill-gemini-api-key:latest \
+            --add-cloudsql-instances ${{ env.CLOUD_SQL_CONNECTION }} \
+            --set-env-vars RAILS_ENV=staging,RAILS_LOG_TO_STDOUT=true,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
+            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest \
             --format "value(uri)")
           echo "url=${URL}" >> ${GITHUB_OUTPUT}
 
@@ -122,5 +125,13 @@ jobs:
             --region ${{ env.GCP_REGION }} \
             --platform managed \
             --allow-unauthenticated \
-            --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true \
-            --set-secrets SECRET_KEY_BASE=SECRET_KEY_BASE:latest,DATABASE_URL=DATABASE_URL:latest,GEMINI_API_KEY=dill-gemini-api-key:latest
+            --add-cloudsql-instances ${{ env.CLOUD_SQL_CONNECTION }} \
+            --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
+            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest
+
+      - name: Run Database Migrations
+        run: |
+          gcloud run jobs execute ${{ env.SERVICE_NAME }}-migrate \
+            --region ${{ env.GCP_REGION }} \
+            --wait \
+            || echo "Migration job not found - skipping (run terraform apply to create)"

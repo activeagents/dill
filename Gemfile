@@ -6,8 +6,12 @@ gem "rails", github: "rails/rails"
 
 # Drivers
 gem "sqlite3", "~> 2.2"
+gem "pg", "~> 1.5"  # PostgreSQL for staging/production (Cloud SQL)
 gem "redis", ">= 4.0.1"
 gem "connection_pool", "~> 2.5"  # Pin to 2.x for Rails edge compatibility
+
+# Cloud Storage
+gem "google-cloud-storage", "~> 1.47"  # GCS for ActiveStorage in staging/production
 
 # Deployment
 gem "puma", ">= 5.0"

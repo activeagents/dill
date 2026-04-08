@@ -123,6 +123,14 @@ resource "google_cloud_run_v2_service" "app" {
       max_instance_count = 1
     }
 
+    # Cloud SQL connection
+    volumes {
+      name = "cloudsql"
+      cloud_sql_instance {
+        instances = [google_sql_database_instance.main.connection_name]
+      }
+    }
+
     # Keep costs at zero — use smallest resource allocation
     containers {
       image = "${var.region}-docker.pkg.dev/${var.project_id}/${var.app_name}/${var.app_name}:latest"
@@ -137,6 +145,12 @@ resource "google_cloud_run_v2_service" "app" {
           memory = "2Gi"
         }
         cpu_idle = true # CPU is only allocated during request processing
+      }
+
+      # Mount Cloud SQL socket
+      volume_mounts {
+        name       = "cloudsql"
+        mount_path = "/cloudsql"
       }
 
       env {
@@ -159,6 +173,28 @@ resource "google_cloud_run_v2_service" "app" {
         value_source {
           secret_key_ref {
             secret  = google_secret_manager_secret.rails_master_key.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      # Database URL for PostgreSQL via Cloud SQL socket
+      env {
+        name = "DATABASE_URL"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.database_url.secret_id
+            version = "latest"
+          }
+        }
+      }
+
+      # GCS bucket for ActiveStorage
+      env {
+        name = "GCS_BUCKET"
+        value_source {
+          secret_key_ref {
+            secret  = google_secret_manager_secret.gcs_bucket.secret_id
             version = "latest"
           }
         }
@@ -207,6 +243,9 @@ resource "google_cloud_run_v2_service" "app" {
     google_project_service.apis,
     google_artifact_registry_repository.app,
     google_secret_manager_secret_version.rails_master_key,
+    google_secret_manager_secret_version.database_url,
+    google_secret_manager_secret_version.gcs_bucket,
+    google_sql_database_instance.main,
   ]
 }
 
@@ -252,4 +291,156 @@ resource "porkbun_dns_record" "google_verification" {
   type      = "TXT"
   content   = var.google_site_verification
   ttl       = 600
+}
+
+# =============================================================================
+# Cloud SQL PostgreSQL (Production Database)
+# =============================================================================
+
+resource "google_project_service" "sqladmin" {
+  project            = var.project_id
+  service            = "sqladmin.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_sql_database_instance" "main" {
+  name             = "${var.app_name}-db"
+  database_version = "POSTGRES_15"
+  region           = var.region
+
+  settings {
+    tier              = var.db_tier
+    availability_type = "ZONAL"
+    disk_size         = 10
+    disk_autoresize   = true
+
+    backup_configuration {
+      enabled                        = true
+      point_in_time_recovery_enabled = true
+      start_time                     = "03:00"
+      backup_retention_settings {
+        retained_backups = 7
+      }
+    }
+
+    ip_configuration {
+      ipv4_enabled = true
+      # For Cloud Run without VPC connector, we need public IP
+      # In production with VPC, switch to private_network
+      authorized_networks {
+        name  = "cloud-run"
+        value = "0.0.0.0/0"  # Cloud Run uses Cloud SQL Auth Proxy
+      }
+    }
+
+    database_flags {
+      name  = "max_connections"
+      value = "100"
+    }
+  }
+
+  deletion_protection = true
+
+  depends_on = [google_project_service.sqladmin]
+}
+
+resource "google_sql_database" "app" {
+  name     = var.app_name
+  instance = google_sql_database_instance.main.name
+}
+
+resource "google_sql_user" "app" {
+  name     = var.app_name
+  instance = google_sql_database_instance.main.name
+  password = var.db_password
+}
+
+# Store database URL in Secret Manager
+resource "google_secret_manager_secret" "database_url" {
+  secret_id = "${var.app_name}-database-url"
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_secret_manager_secret_version" "database_url" {
+  secret      = google_secret_manager_secret.database_url.id
+  secret_data = "postgresql://${google_sql_user.app.name}:${var.db_password}@/${google_sql_database.app.name}?host=/cloudsql/${google_sql_database_instance.main.connection_name}"
+}
+
+resource "google_secret_manager_secret_iam_member" "database_url_access" {
+  secret_id = google_secret_manager_secret.database_url.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+
+# Grant Cloud Run service account access to Cloud SQL
+resource "google_project_iam_member" "cloud_sql_client" {
+  project = var.project_id
+  role    = "roles/cloudsql.client"
+  member  = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+
+# =============================================================================
+# Google Cloud Storage (Document Storage)
+# =============================================================================
+
+resource "google_storage_bucket" "documents" {
+  name          = "${var.project_id}-${var.app_name}-documents"
+  location      = var.storage_location
+  force_destroy = false
+
+  uniform_bucket_level_access = true
+
+  versioning {
+    enabled = true
+  }
+
+  lifecycle_rule {
+    condition {
+      num_newer_versions = 3
+    }
+    action {
+      type = "Delete"
+    }
+  }
+
+  cors {
+    origin          = ["*"]
+    method          = ["GET", "HEAD", "PUT", "POST"]
+    response_header = ["Content-Type", "Content-Disposition"]
+    max_age_seconds = 3600
+  }
+}
+
+# Grant Cloud Run service account access to GCS bucket
+resource "google_storage_bucket_iam_member" "documents_access" {
+  bucket = google_storage_bucket.documents.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.cloud_run.email}"
+}
+
+# Store bucket name in Secret Manager for consistency
+resource "google_secret_manager_secret" "gcs_bucket" {
+  secret_id = "${var.app_name}-gcs-bucket"
+
+  replication {
+    auto {}
+  }
+
+  depends_on = [google_project_service.apis]
+}
+
+resource "google_secret_manager_secret_version" "gcs_bucket" {
+  secret      = google_secret_manager_secret.gcs_bucket.id
+  secret_data = google_storage_bucket.documents.name
+}
+
+resource "google_secret_manager_secret_iam_member" "gcs_bucket_access" {
+  secret_id = google_secret_manager_secret.gcs_bucket.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.cloud_run.email}"
 }

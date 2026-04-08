@@ -21,6 +21,10 @@
 # Ignore node modules
 /node_modules
 
+# Ignore built assets
+/app/assets/builds/*
+!/app/assets/builds/.keep
+
 # Ignore bundled gems
 /vendor/bundle
 

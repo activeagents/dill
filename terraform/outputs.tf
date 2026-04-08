@@ -19,3 +19,25 @@ output "oauth_callback_url" {
   description = "The OAuth callback URL to configure in Google Cloud Console"
   value       = var.domain != "" ? "https://${var.domain}/auth/google_oauth2/callback" : "${google_cloud_run_v2_service.app.uri}/auth/google_oauth2/callback"
 }
+
+# Database outputs
+output "database_instance_name" {
+  description = "Cloud SQL instance name"
+  value       = google_sql_database_instance.main.name
+}
+
+output "database_connection_name" {
+  description = "Cloud SQL connection name for Cloud Run"
+  value       = google_sql_database_instance.main.connection_name
+}
+
+# Storage outputs
+output "gcs_bucket_name" {
+  description = "GCS bucket name for document storage"
+  value       = google_storage_bucket.documents.name
+}
+
+output "gcs_bucket_url" {
+  description = "GCS bucket URL"
+  value       = google_storage_bucket.documents.url
+}
