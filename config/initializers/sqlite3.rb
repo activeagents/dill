@@ -1,3 +1,5 @@
+# SQLite3 configuration extensions - only loaded when using SQLite
+# In staging/production we use PostgreSQL via Cloud SQL
 module SQLite3Configuration
   private
     def configure_connection
@@ -13,5 +15,8 @@ module SQLite3Configuration
 end
 
 ActiveSupport.on_load :active_record do
-  ActiveRecord::ConnectionAdapters::SQLite3Adapter.prepend SQLite3Configuration
+  # Only prepend if SQLite3Adapter is defined (not in production with PostgreSQL)
+  if defined?(ActiveRecord::ConnectionAdapters::SQLite3Adapter)
+    ActiveRecord::ConnectionAdapters::SQLite3Adapter.prepend SQLite3Configuration
+  end
 end
