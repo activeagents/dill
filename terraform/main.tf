@@ -50,10 +50,8 @@ import {
   id = "projects/dill-488620/locations/us-central1/services/dill"
 }
 
-import {
-  to = google_cloud_run_domain_mapping.custom_domain[0]
-  id = "locations/us-central1/namespaces/dill-488620/domainmappings/dill.vc"
-}
+# Note: Domain mapping for dill.vc already exists and is managed outside Terraform
+# The service must be healthy before domain mapping can be created/updated
 
 # Enable required GCP APIs
 resource "google_project_service" "apis" {
@@ -280,20 +278,22 @@ resource "google_cloud_run_v2_service_iam_member" "public" {
 }
 
 # Optional: Custom domain mapping
-resource "google_cloud_run_domain_mapping" "custom_domain" {
-  count    = var.domain != "" ? 1 : 0
-  location = var.region
-  name     = var.domain
-
-  metadata {
-    namespace = var.project_id
-  }
-
-  spec {
-    route_name     = google_cloud_run_v2_service.app.name
-    force_override = true
-  }
-}
+# NOTE: Temporarily disabled - domain mapping already exists and was set up manually.
+# Re-enable once Cloud Run service is healthy and stable.
+# resource "google_cloud_run_domain_mapping" "custom_domain" {
+#   count    = var.domain != "" ? 1 : 0
+#   location = var.region
+#   name     = var.domain
+#
+#   metadata {
+#     namespace = var.project_id
+#   }
+#
+#   spec {
+#     route_name     = google_cloud_run_v2_service.app.name
+#     force_override = true
+#   }
+# }
 
 # =============================================================================
 # Porkbun DNS Configuration
@@ -389,7 +389,8 @@ resource "google_secret_manager_secret" "database_url" {
 
 resource "google_secret_manager_secret_version" "database_url" {
   secret      = google_secret_manager_secret.database_url.id
-  secret_data = "postgresql://${google_sql_user.app.name}:${urlencode(var.db_password)}@/${google_sql_database.app.name}?host=/cloudsql/${google_sql_database_instance.main.connection_name}"
+  # Use localhost as dummy host - the actual connection goes via Unix socket specified in host param
+  secret_data = "postgresql://${google_sql_user.app.name}:${urlencode(var.db_password)}@localhost/${google_sql_database.app.name}?host=/cloudsql/${google_sql_database_instance.main.connection_name}"
 }
 
 resource "google_secret_manager_secret_iam_member" "database_url_access" {
