@@ -50,6 +50,11 @@ import {
   id = "projects/dill-488620/locations/us-central1/services/dill"
 }
 
+import {
+  to = google_cloud_run_domain_mapping.custom_domain[0]
+  id = "locations/us-central1/namespaces/dill-488620/domainmappings/dill.vc"
+}
+
 # Enable required GCP APIs
 resource "google_project_service" "apis" {
   for_each = toset([
