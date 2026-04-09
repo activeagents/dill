@@ -206,19 +206,8 @@ resource "google_cloud_run_v2_service" "app" {
         }
       }
 
-      # Google Gemini API key (if configured)
-      dynamic "env" {
-        for_each = var.gemini_api_key != "" ? toset(["enabled"]) : toset([])
-        content {
-          name = "GEMINI_API_KEY"
-          value_source {
-            secret_key_ref {
-              secret  = google_secret_manager_secret.gemini_api_key[0].secret_id
-              version = "latest"
-            }
-          }
-        }
-      }
+      # Note: GEMINI_API_KEY is set by deploy workflow via --set-secrets
+      # The secret is created above in Secret Manager
 
       # Google OAuth SSO - will be configured after OAuth setup
       # Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET via gcloud run services update
