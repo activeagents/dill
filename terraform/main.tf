@@ -45,6 +45,11 @@ import {
   id = "projects/dill-488620/serviceAccounts/dill-run-sa@dill-488620.iam.gserviceaccount.com"
 }
 
+import {
+  to = google_cloud_run_v2_service.app
+  id = "projects/dill-488620/locations/us-central1/services/dill"
+}
+
 # Enable required GCP APIs
 resource "google_project_service" "apis" {
   for_each = toset([
