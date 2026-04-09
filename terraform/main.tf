@@ -31,6 +31,20 @@ provider "porkbun" {
   secret_api_key = var.porkbun_secret_key != "" ? var.porkbun_secret_key : "placeholder"
 }
 
+# =============================================================================
+# Import blocks for pre-existing resources
+# =============================================================================
+
+import {
+  to = google_artifact_registry_repository.app
+  id = "projects/dill-488620/locations/us-central1/repositories/dill"
+}
+
+import {
+  to = google_service_account.cloud_run
+  id = "projects/dill-488620/serviceAccounts/dill-run-sa@dill-488620.iam.gserviceaccount.com"
+}
+
 # Enable required GCP APIs
 resource "google_project_service" "apis" {
   for_each = toset([
