@@ -81,7 +81,7 @@ jobs:
             --allow-unauthenticated \
             --add-cloudsql-instances ${{ env.CLOUD_SQL_CONNECTION }} \
             --set-env-vars RAILS_ENV=staging,RAILS_LOG_TO_STDOUT=true,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
-            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest \
+            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest,GOOGLE_CLIENT_ID=dill-google-client-id:latest,GOOGLE_CLIENT_SECRET=dill-google-client-secret:latest \
             --format "value(uri)") || {
               echo "::warning::Deploy failed - infrastructure may not be provisioned yet. Run terraform apply first."
               exit 1
@@ -149,7 +149,7 @@ jobs:
             --allow-unauthenticated \
             --add-cloudsql-instances ${{ env.CLOUD_SQL_CONNECTION }} \
             --set-env-vars RAILS_ENV=production,RAILS_LOG_TO_STDOUT=true,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
-            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest
+            --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest,GOOGLE_CLIENT_ID=dill-google-client-id:latest,GOOGLE_CLIENT_SECRET=dill-google-client-secret:latest
 
       - name: Run Database Migrations
         run: |
