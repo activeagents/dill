@@ -8,7 +8,8 @@ if defined?(OmniAuth)
       ENV["GOOGLE_CLIENT_SECRET"],
       {
         scope: "email,profile",
-        prompt: "select_account"
+        prompt: "select_account",
+        hd: "svsg.co" # Restrict to svsg.co Google Workspace domain
       }
   end
 

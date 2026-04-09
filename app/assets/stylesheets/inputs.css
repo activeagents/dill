@@ -1,3 +1,49 @@
+/* Form fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.field label {
+  font-size: 0.875em;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.field--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 1em;
+
+  label {
+    flex-shrink: 0;
+    min-inline-size: 6ch;
+  }
+}
+
+/* Stack layout for forms */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-gap, 1.25rem);
+}
+
+/* Divider with text */
+.divider {
+  align-items: center;
+  display: flex;
+  gap: 1em;
+  color: var(--color-subtle-dark);
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1;
+    border-top: 1px solid var(--color-subtle);
+  }
+}
+
 /* Text inputs */
 .input {
   accent-color: var(--input-accent-color, var(--color-ink));

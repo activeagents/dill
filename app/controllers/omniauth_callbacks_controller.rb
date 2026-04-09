@@ -3,9 +3,19 @@
 class OmniauthCallbacksController < ApplicationController
   allow_unauthenticated_access
 
+  # Allowed email domains for OAuth authentication
+  ALLOWED_DOMAINS = %w[svsg.co].freeze
+
   def google_oauth2
     auth = request.env["omniauth.auth"]
     email = auth.info.email.downcase
+    domain = email.split("@").last
+
+    # Check if email domain is allowed
+    unless ALLOWED_DOMAINS.include?(domain)
+      flash[:alert] = "Sign in is restricted to authorized organizations."
+      redirect_to new_session_path and return
+    end
 
     user = User.find_by(email_address: email)
 
