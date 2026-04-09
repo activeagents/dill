@@ -24,9 +24,11 @@ provider "google" {
   region  = var.region
 }
 
+# Porkbun provider for DNS management (optional)
+# Uses placeholder values when not configured to avoid provider errors
 provider "porkbun" {
-  api_key        = var.porkbun_api_key
-  secret_api_key = var.porkbun_secret_key
+  api_key        = var.porkbun_api_key != "" ? var.porkbun_api_key : "placeholder"
+  secret_api_key = var.porkbun_secret_key != "" ? var.porkbun_secret_key : "placeholder"
 }
 
 # Enable required GCP APIs
