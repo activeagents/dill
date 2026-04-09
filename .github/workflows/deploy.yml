@@ -3,9 +3,22 @@ name: Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '**.md'
   pull_request:
     branches: [main]
     types: [labeled, opened, synchronize, reopened]
+    paths-ignore:
+      - 'terraform/**'
+      - '.github/workflows/terraform.yml'
+      - '**.md'
+  # Re-run deploy after infrastructure changes are applied
+  workflow_run:
+    workflows: ["Terraform"]
+    types: [completed]
+    branches: [main]
 
 env:
   GCP_PROJECT_ID: dill-488620
@@ -69,7 +82,10 @@ jobs:
             --add-cloudsql-instances ${{ env.CLOUD_SQL_CONNECTION }} \
             --set-env-vars RAILS_ENV=staging,RAILS_LOG_TO_STDOUT=true,GCP_PROJECT_ID=${{ env.GCP_PROJECT_ID }} \
             --set-secrets RAILS_MASTER_KEY=dill-rails-master-key:latest,DATABASE_URL=dill-database-url:latest,GCS_BUCKET=dill-gcs-bucket:latest,GEMINI_API_KEY=dill-gemini-api-key:latest \
-            --format "value(uri)")
+            --format "value(uri)") || {
+              echo "::warning::Deploy failed - infrastructure may not be provisioned yet. Run terraform apply first."
+              exit 1
+            }
           echo "url=${URL}" >> ${GITHUB_OUTPUT}
 
       - name: Comment PR with Staging URL
@@ -83,11 +99,14 @@ jobs:
               body: `🚀 Staging deployed: ${{ steps.deploy.outputs.url }}`
             })
 
-  # Deploy to production on main push
+  # Deploy to production on main push or after terraform apply
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # Run on push to main, or after successful terraform apply
+    if: |
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
     environment:
       name: production
       url: https://dill.vc
@@ -95,6 +114,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # For workflow_run, checkout the head branch
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -113,7 +135,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
-          IMAGE_URI="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.ARTIFACT_REGISTRY }}/app:prod-${{ github.sha }}"
+          IMAGE_URI="${{ env.GCP_REGION }}-docker.pkg.dev/${{ env.ARTIFACT_REGISTRY }}/app:prod-${{ github.event.workflow_run.head_sha || github.sha }}"
           docker build -t ${IMAGE_URI} .
           docker push ${IMAGE_URI}
           echo "IMAGE_URI=${IMAGE_URI}" >> ${GITHUB_ENV}
@@ -131,7 +153,8 @@ jobs:
 
       - name: Run Database Migrations
         run: |
+          # Run migrations via Cloud Run Jobs (if exists) or direct exec
           gcloud run jobs execute ${{ env.SERVICE_NAME }}-migrate \
             --region ${{ env.GCP_REGION }} \
             --wait \
-            || echo "Migration job not found - skipping (run terraform apply to create)"
+            2>/dev/null || echo "::notice::Migration job not found - create with: gcloud run jobs create"

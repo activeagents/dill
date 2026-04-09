@@ -11,6 +11,12 @@ terraform {
       version = "~> 1.3"
     }
   }
+
+  # Remote state in GCS - created by bootstrap.sh
+  backend "gcs" {
+    bucket = "dill-488620-tfstate"
+    prefix = "terraform/state"
+  }
 }
 
 provider "google" {
