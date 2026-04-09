@@ -208,7 +208,7 @@ resource "google_cloud_run_v2_service" "app" {
 
       # Google Gemini API key (if configured)
       dynamic "env" {
-        for_each = var.gemini_api_key != "" ? [1] : []
+        for_each = var.gemini_api_key != "" ? toset(["enabled"]) : toset([])
         content {
           name = "GEMINI_API_KEY"
           value_source {
