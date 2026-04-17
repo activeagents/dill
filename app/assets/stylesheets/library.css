@@ -8,7 +8,7 @@
   padding: var(--gap);
 }
 
-.library__book {
+.library__report {
   --row-gap: calc(var(--block-space) * 0.2);
 
   container-type: inline-size;
@@ -18,7 +18,7 @@
   text-align: center;
 }
 
-.library__book--empty {
+.library__report--empty {
   display: inline-grid;
   place-items: center;
 
