@@ -15,9 +15,19 @@ class FileAnalyzerAgent < ApplicationAgent
 
   def analyze_pdf
     @file_path = params[:file_path]
-    # Read PDF content (would need pdf-reader gem)
-    @content = extract_pdf_content(@file_path) if @file_path
+    @analysis_type = params[:analysis_type] || "general"
 
+    if @file_path
+      result = PdfTextExtractor.new(@file_path).extract
+      @content = result[:pages].values.join("\n\n---\n\n")
+      @page_count = result[:page_count]
+      @metadata = result[:metadata]
+    end
+
+    setup_context_and_prompt
+  rescue PdfTextExtractor::ExtractionError => e
+    Rails.logger.error "[FileAnalyzer] PDF extraction failed: #{e.message}"
+    @content = "Error extracting PDF: #{e.message}"
     setup_context_and_prompt
   ensure
     cleanup_temp_file
@@ -51,7 +61,7 @@ class FileAnalyzerAgent < ApplicationAgent
 
   def extract_text
     @file_path = params[:file_path] if params[:file_path]
-    @content = extract_file_content(@file_path) if @file_path
+    @content = extract_document_content(@file_path) if @file_path
 
     setup_context_and_prompt
   ensure
@@ -60,7 +70,7 @@ class FileAnalyzerAgent < ApplicationAgent
 
   def summarize_document
     @file_path = params[:file_path]
-    @content = extract_file_content(@file_path) if @file_path
+    @content = extract_document_content(@file_path) if @file_path
 
     setup_context_and_prompt
   ensure
@@ -207,16 +217,19 @@ class FileAnalyzerAgent < ApplicationAgent
     end
   end
 
-  def extract_pdf_content(file_path)
-    # This would require pdf-reader gem
-    # For now, returning placeholder
-    "PDF content extraction would go here"
-  end
+  # Extract content using format-aware extractor when possible, falling back to raw read
+  def extract_document_content(file_path)
+    return nil unless file_path
 
-  def extract_file_content(file_path)
+    extractor = DocumentTextExtractor.new(file_path)
+    result = extractor.extract
+    result[:pages].values.join("\n\n")
+  rescue DocumentTextExtractor::UnsupportedFormatError
+    # Fall back to raw file read for unsupported formats
     File.read(file_path)
-  rescue
-    "Unable to read file content"
+  rescue => e
+    Rails.logger.error "[FileAnalyzer] Content extraction failed: #{e.message}"
+    File.read(file_path)
   end
 
   def broadcast_chunk(chunk)
